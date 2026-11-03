@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preload" href="fonts/f01-latin.woff2" as="font" type="font/woff2" crossorigin>
-
 <title>Ammoha Cosmetics | Vegan, cruelty-free makeup and skincare</title>
 <meta name="description" data-home="Shop Ammoha Cosmetics: vegan, cruelty-free lipsticks, kajal, mascara, serums and combo offers made for every Indian skin tone. Free shipping across India." content="Shop Ammoha Cosmetics: vegan, cruelty-free lipsticks, kajal, mascara, serums and combo offers made for every Indian skin tone. Free shipping across India.">
 <meta name="theme-color" content="#FFF7F9">
@@ -17,6 +16,10 @@
 <script>window.__resources={"https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js":"vendor/react.production.min.js","https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js":"vendor/react-dom.production.min.js"};</script>
 <script src="./support.js"></script>
 <link rel="stylesheet" href="styles.css">
+<script src="vendor/gsap.min.js" defer></script>
+<script src="vendor/ScrollTrigger.min.js" defer></script>
+<script src="vendor/lenis.min.js" defer></script>
+<script src="motion.js" defer></script>
 </head>
 <body>
 <x-dc>
@@ -31,8 +34,7 @@
 <div class="am-header__row">
 <div class="am-header__left">
 <button class="am-icon-btn am-burger" aria-label="Open menu" aria-expanded="{{ menuOpen }}" onClick="{{ toggleMenu }}"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-<form class="am-pill-input" role="search" onSubmit="{{ submitSearch }}"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" placeholder="Search lipstick, serum, kajal" aria-label="Search products" value="{{ q }}" onInput="{{ onSearch }}"></form>
-<sc-if value="{{ hasQres }}" hint-placeholder-val="{{ false }}"><div class="qres"><p class="am-help" style="padding:8px 12px">Quick results</p><sc-for list="{{ qres }}" as="r" hint-placeholder-count="3"><button onClick="{{ r.go }}"><img src="{{ r.img }}" alt="" loading="lazy" decoding="async"><span>{{ r.name }}</span><b class="am-num">{{ r.priceText }}</b></button></sc-for><button class="qres__all" onClick="{{ submitSearch }}">View all results</button></div></sc-if>
+<button class="hd-search" aria-label="Open search" aria-haspopup="dialog" onClick="{{ openSearch }}"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>Search</span></button>
 </div>
 <button class="am-wordmark" style="border:0;background:none;cursor:pointer" aria-label="Ammoha Cosmetics home" onClick="{{ goHome }}"><img src="assets/7406675d9f2f.webp" alt="Ammoha Cosmetics" loading="lazy" decoding="async"></button>
 <div class="am-header__right">
@@ -68,216 +70,226 @@
 
 <!-- HOME -->
 <sc-if value="{{ show.home }}" hint-placeholder-val="{{ true }}">
-<section class="am-hero" onMouseEnter="{{ hold }}" onMouseLeave="{{ release }}" aria-roledescription="carousel" aria-label="Featured">
-<div class="hstack">
+<!-- 1. CINEMATIC HERO -->
+<section class="cx-hero" onMouseEnter="{{ hold }}" onMouseLeave="{{ release }}" aria-roledescription="carousel" aria-label="Featured campaign">
+<span class="cx-hero__ghost" aria-hidden="true">Ammoha</span>
+<div class="cx-hero__stack">
 <sc-for list="{{ slides }}" as="sl" hint-placeholder-count="5">
-<div class="{{ sl.cls }}"><div class="am-wrap am-hero__grid" style="padding-block:72px">
-<div class="am-hero__copy">
-<p class="am-eyebrow">India's fastest growing cosmetic brand <svg class="ic-fill am-sparkle spin" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c.8 5.5 4.5 9.2 10 10-5.5.8-9.2 4.5-10 10-.8-5.5-4.5-9.2-10-10 5.5-.8 9.2-4.5 10-10z"/></svg></p>
-<sc-if value="{{ sl.active }}" hint-placeholder-val="{{ true }}"><h1 class="am-display-xl">{{ sl.title }}</h1></sc-if><sc-if value="{{ sl.inactive }}" hint-placeholder-val="{{ false }}"><div class="am-display-xl" role="heading" aria-level="2">{{ sl.title }}</div></sc-if>
-<p>Premium shades and skin-friendly formulas for every Indian skin tone. Vegan, cruelty-free, made with oils and botanicals.</p>
-<div class="am-hero__cta"><button class="am-btn am-btn--primary am-btn--lg" onClick="{{ sl.go }}">Shop now</button><button class="am-btn am-btn--outline am-btn--lg" onClick="{{ goFinder }}">Find your lip shade</button></div>
+<div class="{{ sl.cls }}">
+<div class="cx-slide__art"><span class="cx-slide__arch"><img src="{{ sl.main }}" alt="Ammoha model wearing the featured look" decoding="async"></span><img class="cx-slide__prod" src="{{ sl.sub }}" alt="Featured Ammoha products" decoding="async"><span class="cx-slide__ring" aria-hidden="true"></span></div>
+<div class="cx-slide__copy">
+<p class="cx-kick"><i></i>{{ sl.kicker }}</p>
+<sc-if value="{{ sl.active }}" hint-placeholder-val="{{ true }}"><h1 class="cx-title">{{ sl.title }}</h1></sc-if><sc-if value="{{ sl.inactive }}" hint-placeholder-val="{{ false }}"><div class="cx-title" role="heading" aria-level="2">{{ sl.title }}</div></sc-if>
+<p class="cx-lede">Vegan, cruelty-free colour and skincare, made with oils and botanicals for every Indian skin tone.</p>
+<div class="cx-cta"><button class="cx-btn cx-btn--solid mag" onClick="{{ sl.go }}"><span>Shop {{ sl.name }}</span><svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button><button class="cx-btn cx-btn--line" onClick="{{ goFinder }}">Find your lip shade</button></div>
 </div>
-<div class="am-hero__art"><span class="arc"></span><img class="am-circle main floaty" src="{{ sl.main }}" alt="Ammoha model wearing the featured look"><img class="am-circle sub floaty2" src="{{ sl.sub }}" alt="Ammoha products from the featured collection"><span class="star am-sparkle spin"><svg class="ic-fill" width="44" height="44" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c.8 5.5 4.5 9.2 10 10-5.5.8-9.2 4.5-10 10-.8-5.5-4.5-9.2-10-10 5.5-.8 9.2-4.5 10-10z"/></svg></span></div>
-</div></div>
+</div>
 </sc-for>
 </div>
-<div class="hctrl"><button class="am-icon-btn" aria-label="Previous slide" onClick="{{ slidePrev }}"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button>
-<sc-for list="{{ slides }}" as="d" hint-placeholder-count="5"><button class="{{ d.dotCls }}" aria-label="{{ d.label }}" onClick="{{ d.pick }}"></button></sc-for>
-<button class="am-icon-btn" aria-label="Next slide" onClick="{{ slideNext }}"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button></div>
+<div class="cx-hero__ctrl"><button class="cx-round" aria-label="Previous slide" onClick="{{ slidePrev }}"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button><span class="cx-count"><b>{{ slideNum }}</b> / 05</span><button class="cx-round" aria-label="Next slide" onClick="{{ slideNext }}"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button><div class="cx-dots"><sc-for list="{{ slides }}" as="d" hint-placeholder-count="5"><button class="{{ d.dotCls }}" aria-label="{{ d.label }}" onClick="{{ d.pick }}"></button></sc-for></div></div>
+<div class="cx-hero__scroll" aria-hidden="true"><span>Scroll</span><i></i></div>
 </section>
 
-<section class="am-wrap sec" style="width:100%;padding-bottom:24px">
-<div class="am-sec-head"><div><p class="am-eyebrow">Premium collection</p><h2 class="am-display-md">Shop by collection</h2></div><button class="am-btn am-btn--ghost" onClick="{{ goAll }}">Explore more</button></div>
-<div class="am-tiles"><sc-for list="{{ tiles }}" as="t" hint-placeholder-count="4"><button class="am-tile" style="border:0;background:none;cursor:pointer" onClick="{{ t.go }}"><span class="am-tile__img"><img src="{{ t.img }}" alt="" loading="lazy" decoding="async"></span><b>{{ t.label }}</b><small>{{ t.sub }}</small></button></sc-for></div>
-</section>
+<!-- 2. CATEGORY MARQUEE -->
+<div class="cx-marq" aria-hidden="true"><div class="cx-marq__t" data-mo="marquee"><span>Lips</span><i>&#10022;</i><span class="o">Eyes</span><i>&#10022;</i><span>Face</span><i>&#10022;</i><span class="o">Skin</span><i>&#10022;</i><span>Combos</span><i>&#10022;</i><span class="o">Lips</span><i>&#10022;</i><span>Eyes</span><i>&#10022;</i><span class="o">Face</span></div></div>
 
-<section class="am-wrap sec" style="width:100%">
-<div class="am-sec-head"><div><p class="am-eyebrow">Combo offers</p><h2 class="am-display-md">Premium combo collections</h2></div><div class="row gap8"><button class="am-icon-btn" style="border:1.5px solid var(--line-strong)" aria-label="Previous" aria-disabled="{{ carC.prevDis }}" onClick="{{ carC.prev }}"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button><button class="am-icon-btn" style="border:1.5px solid var(--line-strong)" aria-label="Next" aria-disabled="{{ carC.nextDis }}" onClick="{{ carC.next }}"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button><button class="am-btn am-btn--ghost" onClick="{{ goCombo }}">Explore more</button></div></div>
-<div class="carv" data-car="combo" onMouseEnter="{{ carC.enter }}" onMouseLeave="{{ carC.leave }}" onMouseDown="{{ carC.down }}" onMouseUp="{{ carC.up }}" onTouchStart="{{ carC.tdown }}" onTouchEnd="{{ carC.tup }}"><div class="cart-track" style="transform: translateX(-{{ carC.px }}px)"><sc-for list="{{ comboCards }}" as="c" hint-placeholder-count="5"><div class="cw"><dc-import name="PCard" item="{{ c }}" hint-size="100%,520px"></dc-import></div></sc-for></div></div>
-<p class="am-help" style="margin-top:8px;text-align:center">Slides on its own. Drag, swipe or use the arrows.</p>
-</section>
+<!-- 3. MANIFESTO -->
+<section class="mf cx-mf" data-mo="words"><div class="mf__stick"><div class="am-wrap mf__in"><p class="cx-kick"><i></i>The Ammoha manifesto</p><p class="mf__t"><span class="mf__w">Beauty</span> <span class="mf__w">is</span> <span class="mf__w">not</span> <span class="mf__w">static.</span> <span class="mf__w">It</span> <span class="mf__w">is</span> <span class="mf__w">an</span> <span class="mf__w">experience.</span> <span class="mf__w">Rooted</span> <span class="mf__w">in</span> <span class="mf__w">ancient</span> <span class="mf__w">oil</span> <span class="mf__w">rituals,</span> <span class="mf__w">elevated</span> <span class="mf__w">by</span> <span class="mf__w">modern</span> <span class="mf__w">science.</span> <span class="mf__w">Vegan,</span> <span class="mf__w">cruelty-free</span> <span class="mf__w">and</span> <span class="mf__w">made</span> <span class="mf__w">for</span> <span class="mf__w">every</span> <span class="mf__w">skin</span> <span class="mf__w">tone.</span></p><div class="cx-cta"><button class="cx-btn cx-btn--solid mag" onClick="{{ goAbout }}"><span>Read our story</span></button><button class="cx-btn cx-btn--line" onClick="{{ goAll }}">Shop all</button></div></div></div></section>
 
-<section class="am-wrap sec" style="width:100%">
-<div class="am-sec-head"><div><p class="am-eyebrow">New arrivals</p><h2 class="am-display-md">Trending products</h2></div>
-<div class="row gap8"><button class="am-icon-btn" style="border:1.5px solid var(--line-strong)" aria-label="Previous products" aria-disabled="{{ car.prevDis }}" onClick="{{ car.prev }}"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button><button class="am-icon-btn" style="border:1.5px solid var(--line-strong)" aria-label="Next products" aria-disabled="{{ car.nextDis }}" onClick="{{ car.next }}"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button></div></div>
+<!-- 4. WORLDS: interactive category discovery -->
+<section class="cx-worlds"><div class="am-wrap"><div class="cx-head"><div><p class="cx-kick"><i></i>Discover</p><h2 class="cx-h2">Choose your <em>world</em></h2></div><button class="cx-link" onClick="{{ goAll }}">Shop all <svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div></div>
+<div class="cx-worlds__row" data-mo="worlds"><sc-for list="{{ worlds }}" as="d" hint-placeholder-count="5"><button class="cx-world cx-world--{{ d.key }}" onClick="{{ d.go }}" data-cursor="Explore" aria-label="Explore {{ d.name }}"><span class="cx-world__img"><img src="{{ d.img }}" alt="" loading="lazy" decoding="async"></span><span class="cx-world__n">{{ d.num }}</span><span class="cx-world__t">{{ d.name }}</span><span class="cx-world__s">{{ d.sub }}</span><span class="cx-world__c">{{ d.count }}</span></button></sc-for></div></section>
+
+<!-- 5. FEATURED EDITORIAL: colour lab -->
+<section class="lab cx-lab" style="--shade: {{ lab.color }}"><div class="am-wrap lab__in"><div class="lab__stage"><span class="lab__disc"></span><sc-for list="{{ lab.swatches }}" as="s" hint-placeholder-count="12"><img class="{{ s.imgCls }}" src="{{ s.img }}" alt="{{ s.n }} liquid lipstick" loading="lazy"></sc-for></div><div class="lab__ui"><p class="cx-kick"><i></i>The colour lab &middot; Siren Silk</p><h2 class="lab__name">{{ lab.name }}</h2><p class="lab__price"><b>{{ lab.priceText }}</b><sc-if value="{{ lab.hasMrp }}" hint-placeholder-val="{{ true }}"> <s>{{ lab.mrpText }}</s></sc-if> <span class="lab__count">Matte liquid lipstick, {{ lab.count }}</span></p><div class="lab__sw" role="radiogroup" aria-label="Lipstick shade"><sc-for list="{{ lab.swatches }}" as="s" hint-placeholder-count="12"><button class="lab__s" role="radio" aria-checked="{{ s.on }}" aria-disabled="{{ s.out }}" aria-label="{{ s.label }}" title="{{ s.n }}" style="--c: {{ s.c }}" onClick="{{ s.go }}"></button></sc-for></div><div class="cx-cta"><button class="cx-btn cx-btn--solid mag" data-fly aria-disabled="{{ lab.out }}" onClick="{{ lab.add }}"><span>{{ lab.addLabel }}</span></button><button class="cx-btn cx-btn--line" onClick="{{ lab.view }}">View details</button></div></div></div></section>
+
+<!-- 6. TRENDING -->
+<section class="cx-rail"><div class="am-wrap"><div class="cx-head"><div><p class="cx-kick"><i></i>Trending now</p><h2 class="cx-h2">What everyone is <em>adding</em></h2></div>
+<div class="cx-head__r"><button class="cx-round" aria-label="Previous products" aria-disabled="{{ car.prevDis }}" onClick="{{ car.prev }}"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button><button class="cx-round" aria-label="Next products" aria-disabled="{{ car.nextDis }}" onClick="{{ car.next }}"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button><button class="cx-link" onClick="{{ goTrending }}">View all <svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div></div>
 <div class="carv" data-car="trend" onMouseEnter="{{ car.enter }}" onMouseLeave="{{ car.leave }}" onMouseDown="{{ car.down }}" onMouseUp="{{ car.up }}" onTouchStart="{{ car.tdown }}" onTouchEnd="{{ car.tup }}">
 <div class="cart-track" style="transform: translateX(-{{ car.px }}px)"><sc-for list="{{ trend }}" as="c" hint-placeholder-count="6"><div class="cw"><dc-import name="PCard" item="{{ c }}" hint-size="280px,520px"></dc-import></div></sc-for></div>
-</div>
-<p class="am-help" style="margin-top:12px;text-align:center">Drag or swipe to browse. <button class="link" onClick="{{ goTrending }}">View all in 'Trending Products'</button></p>
-</section>
-
-<section class="sec-grad sec"><div class="am-wrap split" style="width:100%">
-<div class="stack gap16" style="align-items:flex-start">
-<p class="am-eyebrow">Glow with style</p>
-<h2 class="am-display-lg">Discover elegance in every shade</h2>
-<p class="lead">Elevate your beauty routine with premium lipsticks and makeup essentials crafted for bold colour, smooth comfort, and lasting wear. Discover shades that enhance your natural glow and bring effortless elegance to every moment.</p>
-<div class="am-hero__cta"><button class="am-btn am-btn--dark am-btn--lg" onClick="{{ goAll }}">Shop now</button><button class="am-btn am-btn--outline am-btn--lg" onClick="{{ goAbout }}">Know more</button></div>
-</div>
-<div class="orbit"><img class="am-circle floaty" style="width:min(420px,100%)" src="assets/1f031dea4324.webp" alt="Model wearing Siren Silk lipstick"><span class="orbit__a"></span><span class="orbit__b"></span><span class="orbit__c"></span></div>
-</div></section>
-
-<section class="am-wrap sec" style="width:100%"><div class="story">
-<div class="story__img"><img src="{{ aboutImgs.c }}" alt="Ammoha model with a glowing, natural makeup look" loading="lazy" decoding="async"></div>
-<div class="story__txt">
-<p class="am-eyebrow">Our story</p>
-<h2 class="am-display-lg">Where nature meets nurture</h2>
-<p class="story__lead">Beauty is more than skin deep. It is a celebration of self-care, heritage and harmony with nature.</p>
-<p class="am-muted">Rooted in ancient traditions and elevated by modern science, we craft makeup and skincare that are as pure as they are powerful.</p>
-<ul class="story__list"><li>100% vegan and cruelty-free</li><li>No sulfates, parabens or silicones</li><li>Made for every skin tone and type</li></ul>
-<div class="row gap12" style="flex-wrap:wrap"><button class="am-btn am-btn--primary am-btn--lg" onClick="{{ goAbout }}">Read our story</button><button class="am-btn am-btn--ghost" onClick="{{ goAll }}">Shop all</button></div>
 </div></div></section>
 
-<section class="am-wrap sec" style="width:100%">
-<div class="am-sec-head"><div><p class="am-eyebrow">Choose the look you love</p><h2 class="am-display-md">Lips</h2></div><div class="row gap8"><button class="am-icon-btn" style="border:1.5px solid var(--line-strong)" aria-label="Previous" aria-disabled="{{ carL.prevDis }}" onClick="{{ carL.prev }}"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button><button class="am-icon-btn" style="border:1.5px solid var(--line-strong)" aria-label="Next" aria-disabled="{{ carL.nextDis }}" onClick="{{ carL.next }}"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button><button class="am-btn am-btn--ghost" onClick="{{ goLips }}">View all in 'Lips'</button></div></div>
-<div class="carv" data-car="lips" onMouseEnter="{{ carL.enter }}" onMouseLeave="{{ carL.leave }}" onMouseDown="{{ carL.down }}" onMouseUp="{{ carL.up }}" onTouchStart="{{ carL.tdown }}" onTouchEnd="{{ carL.tup }}"><div class="cart-track" style="transform: translateX(-{{ carL.px }}px)"><sc-for list="{{ lookShades }}" as="m" hint-placeholder-count="8"><div class="cw cw--s"><div class="mshade"><button class="mshade__img" aria-label="{{ m.name }}" onClick="{{ m.go }}"><img src="{{ m.img }}" alt="" loading="lazy" decoding="async"></button><b class="am-h-sm">{{ m.name }}</b><span class="am-price"><span>{{ m.priceText }}</span><s>{{ m.mrpText }}</s></span><button class="am-btn am-btn--outline am-btn--sm" onClick="{{ m.add }}">{{ m.addLabel }}</button></div></div></sc-for></div></div>
-<p class="am-help" style="margin-top:8px;text-align:center">Slides on its own. Drag, swipe or use the arrows.</p>
-</section>
+<!-- 7. CAMPAIGN: pinned horizontal story -->
+<section class="hs cx-hs" data-mo="hscroll"><div class="hs__stick"><div class="am-wrap hs__head"><p class="cx-kick"><i></i>The campaign canvas</p><h2 class="cx-h2">Five looks. <em>One glow.</em></h2></div><div class="hs__track"><sc-for list="{{ camp }}" as="c" hint-placeholder-count="5"><article class="hs__p"><span class="hs__w" aria-hidden="true">{{ c.word }}</span><div class="hs__img"><img src="{{ c.img }}" alt="Ammoha model for the {{ c.name }} look" loading="lazy"></div><div class="hs__cap"><b>{{ c.name }}</b><button class="cx-btn cx-btn--line cx-btn--sm" onClick="{{ c.go }}">{{ c.label }}</button></div></article></sc-for></div></div></section>
 
-<section class="sec-tint sec"><div class="am-wrap split" style="width:100%;align-items:start">
-<div class="stack gap16" style="align-items:flex-start">
-<p class="am-eyebrow">Lip shade finder</p>
-<h2 class="am-display-lg">Which shade is yours?</h2>
-<p class="lead">Pick your skin tone and see the Siren Silk shades that suit it, based on the Ammoha lip shade guide.</p>
-<div class="tabs"><sc-for list="{{ tones }}" as="t" hint-placeholder-count="3"><button class="am-chip" aria-pressed="{{ t.on }}" onClick="{{ t.go }}">{{ t.label }}</button></sc-for></div>
-<p class="am-help" style="font-size:15px;color:var(--ink)">Best for {{ finder.tone }}: {{ finder.tip }}.</p>
-<button class="am-btn am-btn--ghost" onClick="{{ goFinder }}">Open the full shade finder</button>
-</div>
-<div class="cols-2 rail-m" style="gap:16px"><sc-for list="{{ finder.shades }}" as="m" hint-placeholder-count="4"><div class="mshade"><button class="mshade__img" aria-label="{{ m.name }}" onClick="{{ m.go }}"><img src="{{ m.img }}" alt="" loading="lazy" decoding="async"></button><b class="am-h-sm">{{ m.name }}</b><button class="am-btn am-btn--primary am-btn--sm" onClick="{{ m.add }}">{{ m.addLabel }}</button></div></sc-for></div>
+<!-- 8. SHADE DISCOVERY -->
+<section class="cx-shade"><div class="am-wrap cx-shade__in">
+<div class="cx-shade__txt"><p class="cx-kick"><i></i>Lip shade finder</p><h2 class="cx-h2">Which shade is <em>yours?</em></h2><p class="cx-lede">Pick your skin tone and see the Siren Silk shades that suit it, from the Ammoha lip shade guide.</p>
+<div class="cx-tabs"><sc-for list="{{ tones }}" as="t" hint-placeholder-count="3"><button class="cx-tab" aria-pressed="{{ t.on }}" onClick="{{ t.go }}">{{ t.label }}</button></sc-for></div>
+<p class="cx-note">Best for {{ finder.tone }}: {{ finder.tip }}.</p>
+<button class="cx-link" onClick="{{ goFinder }}">Open the full shade finder <svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
+<div class="cx-shade__grid"><sc-for list="{{ finder.shades }}" as="m" hint-placeholder-count="4"><div class="mshade cx-ms"><button class="mshade__img" aria-label="{{ m.name }}" onClick="{{ m.go }}"><img src="{{ m.img }}" alt="" loading="lazy" decoding="async"></button><span class="cx-ms__dot" style="background: {{ m.tint }}"></span><b>{{ m.name }}</b><button class="cx-btn cx-btn--line cx-btn--sm" data-fly onClick="{{ m.add }}">{{ m.addLabel }}</button></div></sc-for></div>
 </div></section>
 
-<section class="am-wrap sec" style="width:100%">
-<div class="am-sec-head"><div><p class="am-eyebrow">Discover your eye look</p><h2 class="am-display-md">Eyes</h2></div><div class="row gap8"><button class="am-icon-btn" style="border:1.5px solid var(--line-strong)" aria-label="Previous" aria-disabled="{{ carE.prevDis }}" onClick="{{ carE.prev }}"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button><button class="am-icon-btn" style="border:1.5px solid var(--line-strong)" aria-label="Next" aria-disabled="{{ carE.nextDis }}" onClick="{{ carE.next }}"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button><button class="am-btn am-btn--ghost" onClick="{{ goEyes }}">View all in 'Eyes'</button></div></div>
-<div class="carv" data-car="eyes" onMouseEnter="{{ carE.enter }}" onMouseLeave="{{ carE.leave }}" onMouseDown="{{ carE.down }}" onMouseUp="{{ carE.up }}" onTouchStart="{{ carE.tdown }}" onTouchEnd="{{ carE.tup }}"><div class="cart-track" style="transform: translateX(-{{ carE.px }}px)"><sc-for list="{{ eyeCards }}" as="m" hint-placeholder-count="5"><div class="cw cw--s"><div class="mshade"><button class="mshade__img" aria-label="{{ m.name }}" onClick="{{ m.go }}"><img src="{{ m.img }}" alt="" loading="lazy" decoding="async"></button><b class="am-h-sm">Celestial Dream Kohl Kajal, {{ m.name }}</b><span class="am-price"><span>{{ m.priceText }}</span><s>{{ m.mrpText }}</s></span><button class="am-btn am-btn--outline am-btn--sm" onClick="{{ m.add }}">{{ m.addLabel }}</button></div></div></sc-for></div></div>
-<p class="am-help" style="margin-top:8px;text-align:center">Slides on its own. Drag, swipe or use the arrows.</p>
-</section>
-
-<section class="am-wrap" style="width:100%;padding-block:24px 72px"><div class="promo2">
-<div class="promo2__art"><img class="am-circle floaty" src="assets/d965e72c8076.webp" alt="Ammoha Glam Kit"><span class="promo2__tag">Up to 30% off</span></div>
-<div class="promo2__copy"><p class="am-eyebrow" style="color:#fff">New-in promotion</p><h2 class="am-display-md" style="color:#fff">Combo offers, ending soon</h2><p style="color:rgba(255,255,255,.88);max-width:44ch">Premium combo collections made for more glow. Add code SAVE10 for an extra 10% off.</p>
-<div class="ctime2" role="timer" aria-label="Time left in the promotion"><sc-for list="{{ count }}" as="c" hint-placeholder-count="4"><div class="ct"><b class="am-num">{{ c.v }}</b><span>{{ c.label }}</span></div><sc-if value="{{ c.sep }}" hint-placeholder-val="{{ true }}"><i class="ctsep">:</i></sc-if></sc-for></div>
-<button class="am-btn am-btn--lg promo2__btn" onClick="{{ goCombo }}">Explore promotion</button></div>
+<!-- 9. COMBOS -->
+<section class="cx-rail cx-rail--dark"><div class="am-wrap"><div class="cx-head"><div><p class="cx-kick"><i></i>Combo offers</p><h2 class="cx-h2">More glow, <em>for less</em></h2></div>
+<div class="cx-head__r"><button class="cx-round" aria-label="Previous" aria-disabled="{{ carC.prevDis }}" onClick="{{ carC.prev }}"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button><button class="cx-round" aria-label="Next" aria-disabled="{{ carC.nextDis }}" onClick="{{ carC.next }}"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button><button class="cx-link" onClick="{{ goCombo }}">Explore combos <svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div></div>
+<div class="carv" data-car="combo" onMouseEnter="{{ carC.enter }}" onMouseLeave="{{ carC.leave }}" onMouseDown="{{ carC.down }}" onMouseUp="{{ carC.up }}" onTouchStart="{{ carC.tdown }}" onTouchEnd="{{ carC.tup }}"><div class="cart-track" style="transform: translateX(-{{ carC.px }}px)"><sc-for list="{{ comboCards }}" as="c" hint-placeholder-count="5"><div class="cw"><dc-import name="PCard" item="{{ c }}" hint-size="100%,520px"></dc-import></div></sc-for></div></div>
+<p class="cx-note" style="text-align:center;margin-top:20px">Use code SAVE10 for an extra 10% off at checkout.</p>
 </div></section>
 
-<section class="am-wrap sec" style="width:100%">
-<div class="am-sec-head"><div><p class="am-eyebrow">What our clients say</p><h2 class="am-display-md">Insta community</h2></div><a class="am-btn am-btn--ghost" href="https://www.instagram.com/ammohacosmetics" target="_blank">@ammohacosmetics</a></div>
-<div class="reels"><sc-for list="{{ reels }}" as="r" hint-placeholder-count="3"><button class="reel" aria-label="{{ r.label }}" onClick="{{ r.open }}"><video src="{{ r.v }}" poster="{{ r.p }}" autoplay muted loop playsinline preload="metadata"></video><span class="reel__play"><svg class="ic-fill" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>Watch</span></button></sc-for></div>
-<p class="am-help" style="margin-top:16px;text-align:center">Customer reviews from the store's review app appear in this section on the live site.</p>
-</section>
+<!-- 10. EYES: dramatic spotlight -->
+<section class="cx-eyes"><div class="am-wrap cx-eyes__in">
+<div class="cx-eyes__art"><img src="{{ eyeHero }}" alt="Model wearing Celestial Dream kohl kajal" loading="lazy" decoding="async"><span class="cx-eyes__tag">Celestial Dream<br>Kohl Kajal</span></div>
+<div class="cx-eyes__txt"><p class="cx-kick"><i></i>Discover your eye look</p><h2 class="cx-h2">Smudge-proof. <em>Dramatic.</em></h2><p class="cx-lede">Five kohl colours, from midnight black to emerald and turquoise, each a single tap from your bag.</p>
+<div class="cx-eyes__list"><sc-for list="{{ eyeCards }}" as="m" hint-placeholder-count="5"><div class="cx-er"><button class="cx-er__b" aria-label="{{ m.name }}" onClick="{{ m.go }}"><span class="cx-er__dot" style="background: {{ m.tint }}"></span><b>{{ m.name }}</b><span class="cx-er__p">{{ m.priceText }}</span></button><button class="cx-round cx-round--sm" data-fly aria-label="Add {{ m.name }} to bag" onClick="{{ m.add }}"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button></div></sc-for></div>
+<button class="cx-link" onClick="{{ goEyes }}">Shop all eyes <svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
+</div></section>
 
-<section class="sec-grad sec"><div class="am-wrap split" style="width:100%">
-<div style="display:grid;place-items:center"><img class="am-circle floaty2" style="width:min(380px,100%)" src="assets/916e3c5dceba.webp" alt="Fairy Dew Face Serum in use"></div>
-<div class="stack gap16" style="align-items:flex-start">
-<p class="am-eyebrow">Inspired by heritage</p>
-<h2 class="am-display-lg">Our founder's story</h2>
-<p class="lead">Founded by Dr. Risha Shah, Ammoha was born from her deep love for beauty and her mother's traditional kajal-making methods. Her personal experience with sensitive skin and chemically harsh products inspired a vision to create natural, vegan, and skin-friendly cosmetics thoughtfully designed for every Indian skin tone.</p>
-<p class="lead" style="font-size:16px">Driven by a passion for safe beauty and inspired by India's rich heritage, Ammoha brings together natural ingredients, thoughtful formulations, and modern cosmetic expertise. Rooted in research and real user insights, every product is created to celebrate individuality and enhance every woman's unique beauty through safe, inclusive, and heritage-inspired formulations.</p>
-<button class="am-btn am-btn--dark am-btn--lg" onClick="{{ goAbout }}">Read more</button>
-</div></div></section>
+<!-- 11. COMMUNITY -->
+<section class="cx-reels"><div class="am-wrap"><div class="cx-head"><div><p class="cx-kick"><i></i>Insta community</p><h2 class="cx-h2">Seen on <em>@ammohacosmetics</em></h2></div><a class="cx-link" href="https://www.instagram.com/ammohacosmetics" target="_blank" rel="noopener">Follow us <svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+<div class="reels"><sc-for list="{{ reels }}" as="r" hint-placeholder-count="3"><button class="reel" aria-label="{{ r.label }}" onClick="{{ r.open }}"><video src="{{ r.v }}" poster="{{ r.p }}" autoplay muted loop playsinline preload="metadata"></video><span class="reel__play"><svg class="ic-fill" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>Watch</span></button></sc-for></div></div></section>
 
-<section class="am-wrap sec" style="width:100%">
-<div class="am-sec-head"><div><p class="am-eyebrow">Read our blogs</p><h2 class="am-display-md">Beauty notes</h2></div><button class="am-btn am-btn--ghost" onClick="{{ goBlog }}">Explore more</button></div>
-<div class="cols-4 rail-m"><sc-for list="{{ blogHome }}" as="b" hint-placeholder-count="4"><button class="bcard" onClick="{{ b.go }}"><span class="bimg"><img src="{{ b.img }}" alt="" loading="lazy" decoding="async"></span><span class="bbody"><span class="am-help">{{ b.meta }}</span><h3 style="font-size:18px;line-height:24px">{{ b.title }}</h3></span></button></sc-for></div>
-</section>
+<!-- 12. PHILOSOPHY -->
+<section class="cx-phil"><div class="am-wrap cx-phil__in">
+<div class="cx-phil__art"><img src="assets/m_skin_a.webp" alt="Model holding Fairy Dew Face Serum" loading="lazy" decoding="async"><span class="cx-phil__stamp">Vegan<br>&middot;<br>Cruelty-free</span></div>
+<div class="cx-phil__txt"><p class="cx-kick"><i></i>Inspired by heritage</p><h2 class="cx-h2">Our founder's <em>story</em></h2>
+<p class="cx-lede">Founded by Dr. Risha Shah, Ammoha was born from her deep love for beauty and her mother's traditional kajal-making methods. Her personal experience with sensitive skin and chemically harsh products inspired a vision to create natural, vegan, and skin-friendly cosmetics thoughtfully designed for every Indian skin tone.</p>
+<ul class="cx-pillars"><li><b>Plant-based</b><span>100% vegan formulas</span></li><li><b>Kind</b><span>Never tested on animals</span></li><li><b>Clean</b><span>No sulfates, parabens or silicones</span></li><li><b>Inclusive</b><span>Made for every skin tone</span></li></ul>
+<button class="cx-btn cx-btn--solid mag" onClick="{{ goAbout }}"><span>Read our story</span></button></div>
+</div></section>
 
-<section class="sec-tint sec"><div class="am-wrap" style="width:100%">
-<div class="am-sec-head" style="justify-content:center;text-align:center"><div><p class="am-eyebrow">Why choose us</p><h2 class="am-display-md">Beauty you can trust</h2></div></div>
-<div class="why2 rail-m">
-<div class="why2__c"><span class="why2__i"><svg class="ic" width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17" r="1.6"/><circle cx="17" cy="17" r="1.6"/></svg></span><b class="am-h-md">Fast Shipping</b><p class="am-muted">Just order and relax, we value your time</p></div>
-<div class="why2__c"><span class="why2__i"><svg class="ic" width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 11V8a6 6 0 0 1 12 0v3"/><path d="M5 11h14v9H5z"/></svg></span><b class="am-h-md">100% Secure</b><p class="am-muted">We secure payment through our website</p></div>
-<div class="why2__c"><span class="why2__i"><svg class="ic" width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><path d="M4 13h3v5H4zM17 13h3v5h-3z"/></svg></span><b class="am-h-md">Customer Support</b><p class="am-muted">Use our Contact Us form to reach us 24/7</p></div>
-<div class="why2__c"><span class="why2__i"><svg class="ic" width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg></span><b class="am-h-md">100% Guaranteed</b><p class="am-muted">We always provide high-quality products.</p></div>
-</div></div></section>
+<!-- 13. EDITORIAL / BLOG -->
+<section class="cx-blog"><div class="am-wrap"><div class="cx-head"><div><p class="cx-kick"><i></i>Read our blogs</p><h2 class="cx-h2">Beauty <em>notes</em></h2></div><button class="cx-link" onClick="{{ goBlog }}">All articles <svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
+<div class="cx-blog__grid"><sc-for list="{{ blogHome }}" as="b" hint-placeholder-count="4"><button class="bcard cx-bc" onClick="{{ b.go }}"><span class="bimg"><img src="{{ b.img }}" alt="" loading="lazy" decoding="async"></span><span class="bbody"><span class="cx-bc__m">{{ b.tag }} &middot; {{ b.read }}</span><h3>{{ b.title }}</h3></span></button></sc-for></div></div></section>
+
+<!-- 14. NEWSLETTER -->
+<section class="cx-news"><div class="am-wrap cx-news__in"><div><p class="cx-kick"><i></i>The Ammoha letter</p><h2 class="cx-h2">New shades, <em>first.</em></h2><p class="cx-lede">Combo offers and beauty notes, straight to your inbox.</p></div>
+<form class="cx-news__f" onSubmit="{{ subscribe }}"><input type="email" placeholder="Your email address" aria-label="Email address" value="{{ nl }}" onInput="{{ onNl }}"><button class="cx-btn cx-btn--solid" type="submit"><span>Subscribe</span></button><sc-if value="{{ nlErr }}" hint-placeholder-val="{{ false }}"><p class="am-help is-error" role="alert">Enter a valid email address.</p></sc-if></form></div></section>
 </sc-if>
 
 <!-- COLLECTION, SEARCH, WISHLIST -->
 <sc-if value="{{ show.list }}" hint-placeholder-val="{{ false }}">
-<section class="am-wrap" style="width:100%;padding-block:40px 24px">
+<section class="cl-hero cl-hero--{{ listTheme }}" data-word="{{ list.title }}">
+<span class="cl-hero__ghost" aria-hidden="true">{{ list.title }}</span>
+<div class="am-wrap cl-hero__in">
+<div class="cl-hero__txt">
 <p class="am-crumbs"><button class="crumb-btn" onClick="{{ goHome }}">Home</button> / {{ list.title }}</p>
-<div class="am-sec-head" style="margin:12px 0 0">
-<div class="stack gap8"><h1 class="am-display-lg">{{ list.title }}</h1><p class="lead" style="font-size:16px">{{ list.desc }}</p></div>
-<div class="row gap12"><span class="am-results" role="status">{{ list.countText }}</span><sc-if value="{{ list.hasFilters }}" hint-placeholder-val="{{ true }}"><button class="fbtn" onClick="{{ openFilter }}"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>Filters<sc-if value="{{ hasFilterCount }}" hint-placeholder-val="{{ false }}"><span class="am-count fbtn__n">{{ filterCount }}</span></sc-if></button></sc-if>
-<div class="dsel"><button class="dsel__btn" aria-haspopup="listbox" aria-expanded="{{ sortOpen }}" onClick="{{ toggleSort }}"><span class="dsel__k">Sort by</span><b>{{ sortLabel }}</b><svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
-<sc-if value="{{ sortOpen }}" hint-placeholder-val="{{ false }}"><button class="dsel__bg" aria-label="Close sort menu" onClick="{{ toggleSort }}"></button><div class="dsel__menu" role="listbox" aria-label="Sort by"><sc-for list="{{ sortOpts }}" as="o" hint-placeholder-count="4"><button role="option" aria-selected="{{ o.on }}" class="{{ o.cls }}" onClick="{{ o.go }}"><span>{{ o.label }}</span><svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg></button></sc-for></div></sc-if></div></div>
+<p class="cx-kick"><i></i>{{ list.kicker }}</p>
+<h1 class="cl-hero__h">{{ list.title }}</h1>
+<p class="cx-lede">{{ list.desc }}</p>
+<p class="cl-hero__count" role="status"><b>{{ list.total }}</b> {{ list.unit }}</p>
 </div>
-<sc-if value="{{ list.hasSubs }}" hint-placeholder-val="{{ false }}"><div class="tabs" style="margin-top:20px"><sc-for list="{{ list.subs }}" as="c" hint-placeholder-count="4"><button class="am-chip" aria-pressed="false" onClick="{{ c.go }}">{{ c.label }}</button></sc-for></div></sc-if>
-
+<div class="cl-hero__art"><span class="cl-hero__arch"><img src="{{ list.heroImg }}" alt="" decoding="async"></span><img class="cl-hero__prod" src="{{ list.heroProd }}" alt="" decoding="async"><span class="cl-hero__orb" aria-hidden="true"></span></div>
+</div>
 </section>
-<section class="am-wrap" style="width:100%;padding-bottom:72px">
+<sc-if value="{{ list.hasSubs }}" hint-placeholder-val="{{ false }}"><div class="am-wrap cl-subs"><sc-for list="{{ list.subs }}" as="c" hint-placeholder-count="4"><button class="cl-sub" onClick="{{ c.go }}">{{ c.label }}</button></sc-for></div></sc-if>
+<div class="cl-bar"><div class="am-wrap cl-bar__in">
+<div class="cl-bar__l"><span class="am-results">{{ list.countText }}</span>
+<sc-if value="{{ list.hasFilters }}" hint-placeholder-val="{{ true }}"><div class="cl-chips" role="group" aria-label="Price"><sc-for list="{{ priceChips }}" as="p" hint-placeholder-count="4"><button class="cl-chip" aria-pressed="{{ p.on }}" onClick="{{ p.go }}">{{ p.label }}</button></sc-for></div></sc-if></div>
+<div class="cl-bar__r">
+<sc-if value="{{ list.hasFilters }}" hint-placeholder-val="{{ true }}"><button class="fbtn" onClick="{{ openFilter }}"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg>Filters<sc-if value="{{ hasFilterCount }}" hint-placeholder-val="{{ false }}"><span class="am-count fbtn__n">{{ filterCount }}</span></sc-if></button></sc-if>
+<div class="dsel"><button class="dsel__btn" aria-haspopup="listbox" aria-expanded="{{ sortOpen }}" onClick="{{ toggleSort }}"><span class="dsel__k">Sort by</span><b>{{ sortLabel }}</b><svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+<sc-if value="{{ sortOpen }}" hint-placeholder-val="{{ false }}"><button class="dsel__bg" aria-label="Close sort menu" onClick="{{ toggleSort }}"></button><div class="dsel__menu" role="listbox" aria-label="Sort by"><sc-for list="{{ sortOpts }}" as="o" hint-placeholder-count="4"><button role="option" aria-selected="{{ o.on }}" class="{{ o.cls }}" onClick="{{ o.go }}"><span>{{ o.label }}</span><svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg></button></sc-for></div></sc-if></div>
+</div></div></div>
+<sc-if value="{{ list.hasShades }}" hint-placeholder-val="{{ false }}"><div class="am-wrap cl-shades"><span class="cl-shades__k">Shade family</span><sc-for list="{{ list.shadeGroups }}" as="g" hint-placeholder-count="5"><button class="cl-chip" aria-pressed="{{ g.on }}" onClick="{{ g.go }}">{{ g.label }}</button></sc-for></div></sc-if>
+<section class="am-wrap cl-grid" style="width:100%">
 <sc-if value="{{ list.has }}" hint-placeholder-val="{{ true }}"><div class="gridv" style="grid-template-columns: repeat({{ gridCols }}, minmax(0, 1fr))"><sc-for list="{{ list.cards }}" as="c" hint-placeholder-count="8"><dc-import name="PCard" item="{{ c }}" hint-size="100%,520px"></dc-import></sc-for></div>
-<sc-if value="{{ list.hasPager }}" hint-placeholder-val="{{ true }}"><nav class="pager2" aria-label="Pagination"><p class="am-results">{{ list.rangeText }}</p><div class="pager2__row"><button class="pgn" aria-disabled="{{ list.prevDis }}" onClick="{{ list.prev }}"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>Previous</button><sc-for list="{{ list.pageBtns }}" as="b" hint-placeholder-count="3"><button class="{{ b.cls }}" aria-label="{{ b.label }}" aria-current="{{ b.cur }}" onClick="{{ b.go }}">{{ b.n }}</button></sc-for><button class="pgn" aria-disabled="{{ list.nextDis }}" onClick="{{ list.next }}">Next<svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button></div></nav></sc-if></sc-if>
-<sc-if value="{{ list.none }}" hint-placeholder-val="{{ false }}"><div class="empty-big"><span class="am-sparkle"><svg class="ic-fill" width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c.8 5.5 4.5 9.2 10 10-5.5.8-9.2 4.5-10 10-.8-5.5-4.5-9.2-10-10 5.5-.8 9.2-4.5 10-10z"/></svg></span><b class="am-h-md" style="color:var(--ink)">{{ list.noneTitle }}</b><span>{{ list.noneText }}</span><button class="am-btn am-btn--primary" onClick="{{ list.reset }}">{{ list.resetLabel }}</button></div></sc-if>
+<sc-if value="{{ list.hasPager }}" hint-placeholder-val="{{ true }}"><div class="cl-more"><div class="cl-more__bar"><i style="width: {{ list.progress }}%"></i></div><p class="am-results">{{ list.rangeText }}</p><button class="cx-btn cx-btn--line" onClick="{{ list.more }}">{{ list.moreLabel }}</button></div></sc-if></sc-if>
+<sc-if value="{{ list.none }}" hint-placeholder-val="{{ false }}"><div class="empty-big"><span class="am-sparkle"><svg class="ic-fill" width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c.8 5.5 4.5 9.2 10 10-5.5.8-9.2 4.5-10 10-.8-5.5-4.5-9.2-10-10 5.5-.8 9.2-4.5 10-10z"/></svg></span><b class="am-h-md" style="color:var(--ink)">{{ list.noneTitle }}</b><span>{{ list.noneText }}</span><button class="cx-btn cx-btn--solid" onClick="{{ list.reset }}"><span>{{ list.resetLabel }}</span></button></div></sc-if>
 </section>
 </sc-if>
 
 <!-- PRODUCT -->
 <sc-if value="{{ show.product }}" hint-placeholder-val="{{ false }}">
-<div class="am-wrap pdp2" style="width:100%">
-<div class="gal">
-<div class="gal__thumbs"><sc-for list="{{ pd.frames }}" as="t" hint-placeholder-count="5"><button class="{{ t.cls }}" aria-label="{{ t.label }}" aria-current="{{ t.on }}" onClick="{{ t.go }}"><span class="gthumb__i" style="background-image: url({{ t.src }}); background-size: {{ t.size }}; background-position: {{ t.pos }}"></span></button></sc-for></div>
-<div class="gal__main">
-<sc-if value="{{ pd.hasMain }}" hint-placeholder-val="{{ true }}"><button class="zmain" aria-label="Open photo to zoom" onMouseMove="{{ zmove }}" onMouseLeave="{{ zleave }}" onClick="{{ pd.openZoom }}"><span class="zimg" style="background-image: url({{ pd.cur.src }}); background-size: {{ pd.cur.size }}; background-position: {{ pd.cur.pos }}"></span></button>
-<button class="gal__zoom" aria-label="Zoom photo" onClick="{{ pd.openZoom }}"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M11 8v6M8 11h6"/></svg></button>
-<sc-if value="{{ pd.hasMulti }}" hint-placeholder-val="{{ true }}"><button class="gal__nav gal__nav--l" aria-label="Previous photo" onClick="{{ pd.prevImg }}"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button><button class="gal__nav gal__nav--r" aria-label="Next photo" onClick="{{ pd.nextImg }}"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button><span class="gal__count">{{ pd.counter }}</span></sc-if></sc-if>
+<article class="pd pd--{{ pd.theme }}" style="--tint: {{ pd.tint }}">
+<div class="am-wrap pd__grid">
+<!-- GALLERY -->
+<div class="pgal" data-pgal>
+<div class="pgal__thumbs" role="tablist" aria-label="Product photos"><sc-for list="{{ pd.frames }}" as="t" hint-placeholder-count="5"><button class="{{ t.cls }}" role="tab" aria-label="{{ t.label }}" aria-selected="{{ t.on }}" onClick="{{ t.go }}"><span class="gthumb__i" style="background-image: url({{ t.src }}); background-size: {{ t.size }}; background-position: {{ t.pos }}"></span></button></sc-for></div>
+<div class="pgal__main">
+<span class="pgal__halo" aria-hidden="true"></span>
+<sc-if value="{{ pd.hasMain }}" hint-placeholder-val="{{ true }}"><div class="pgal__stage" data-zoomstage data-cursor="Zoom" role="group" aria-roledescription="carousel" aria-label="Product photos" onClick="{{ pd.openZoom }}">
+<sc-for list="{{ pd.frames }}" as="f" hint-placeholder-count="5"><span class="pgal__f {{ f.fcls }}" style="background-image: url({{ f.src }}); background-size: {{ f.size }}; background-position: {{ f.pos }}" role="img" aria-label="{{ f.label }}"></span></sc-for></div>
+<sc-if value="{{ pd.hasMulti }}" hint-placeholder-val="{{ true }}"><button class="pgal__nav pgal__nav--l" aria-label="Previous photo" onClick="{{ pd.prevImg }}"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button><button class="pgal__nav pgal__nav--r" aria-label="Next photo" onClick="{{ pd.nextImg }}"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button></sc-if>
+<span class="pgal__count"><b>{{ pd.num }}</b> / {{ pd.total }}</span>
+<button class="pgal__zoom" aria-label="Open full-size photo" onClick="{{ pd.openZoom }}"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M11 8v6M8 11h6"/></svg></button>
+<div class="pgal__dots"><sc-for list="{{ pd.frames }}" as="t" hint-placeholder-count="5"><i class="{{ t.dcls }}"></i></sc-for></div></sc-if>
 <sc-if value="{{ pd.noMain }}" hint-placeholder-val="{{ false }}"><span class="ph ph--lg" style="background: radial-gradient(circle at 35% 30%, #ffffff, {{ pd.tint }} 75%)">Photo coming soon</span></sc-if>
 </div>
 </div>
-<div class="am-buy">
+<!-- BUY -->
+<div class="pbuy">
 <p class="am-crumbs"><button class="crumb-btn" onClick="{{ goHome }}">Home</button> / <button class="crumb-btn" onClick="{{ pd.goCat }}">{{ pd.cat }}</button> / {{ pd.name }}</p>
-<div class="stack gap8"><p class="am-eyebrow">{{ pd.cat }}</p><h1 class="am-display-md">{{ pd.name }}</h1><p class="am-muted">{{ pd.sub }}</p></div>
-<div class="am-price" style="font-size:26px"><span>{{ pd.priceText }}</span><sc-if value="{{ pd.hasMrp }}" hint-placeholder-val="{{ true }}"><s style="font-size:16px">{{ pd.mrpText }}</s><em style="font-size:14px">{{ pd.offText }}</em></sc-if></div>
+<p class="cx-kick"><i></i>{{ pd.kicker }}</p>
+<h1 class="pbuy__h">{{ pd.name }}</h1>
+<p class="pbuy__sub">{{ pd.sub }}</p>
+<div class="pbuy__price"><b>{{ pd.priceText }}</b><sc-if value="{{ pd.hasMrp }}" hint-placeholder-val="{{ true }}"><s>{{ pd.mrpText }}</s><em>{{ pd.offText }}</em></sc-if><span class="pbuy__stock {{ pd.stockCls }}"><i></i>{{ pd.stockText }}</span></div>
 <p class="am-help">Inclusive of all taxes. Free shipping on all orders.</p>
-<sc-if value="{{ pd.hasVariants }}" hint-placeholder-val="{{ true }}"><div class="am-shades">
-<div class="am-shades__head"><b>{{ pd.variantLabel }}: {{ pd.variantName }}</b><span>{{ pd.variantCount }}</span></div>
-<sc-if value="{{ pd.swatches }}" hint-placeholder-val="{{ true }}"><div class="am-swatches" role="radiogroup" aria-label="Shade"><sc-for list="{{ pd.variants }}" as="v" hint-placeholder-count="6"><button class="am-swatch" role="radio" aria-checked="{{ v.on }}" aria-disabled="{{ v.out }}" aria-label="{{ v.label }}" title="{{ v.n }}" style="--sw: {{ v.c }}" onClick="{{ v.go }}"></button></sc-for></div></sc-if>
-<sc-if value="{{ pd.chips }}" hint-placeholder-val="{{ false }}"><div class="stack gap8"><sc-for list="{{ pd.variants }}" as="v" hint-placeholder-count="2"><button class="am-chip" style="justify-content:space-between;min-height:48px;border-radius:var(--radius-md);text-align:left" aria-pressed="{{ v.on }}" onClick="{{ v.go }}"><span>{{ v.n }}</span><b class="am-num">{{ v.priceText }}</b></button></sc-for></div></sc-if>
+<sc-if value="{{ pd.hasVariants }}" hint-placeholder-val="{{ true }}"><div class="pvar">
+<div class="pvar__head"><b>{{ pd.variantLabel }}</b><span class="pvar__cur">{{ pd.variantName }}</span><span class="pvar__n">{{ pd.variantCount }}</span></div>
+<sc-if value="{{ pd.swatches }}" hint-placeholder-val="{{ true }}"><div class="pvar__sw" role="radiogroup" aria-label="Shade"><sc-for list="{{ pd.variants }}" as="v" hint-placeholder-count="6"><button class="pvar__s {{ v.cls }}" role="radio" aria-checked="{{ v.on }}" aria-disabled="{{ v.out }}" aria-label="{{ v.label }}" title="{{ v.n }}" style="--sw: {{ v.c }}" onClick="{{ v.go }}"><span class="pvar__tip">{{ v.n }}</span></button></sc-for></div></sc-if>
+<sc-if value="{{ pd.chips }}" hint-placeholder-val="{{ false }}"><div class="pvar__ch"><sc-for list="{{ pd.variants }}" as="v" hint-placeholder-count="2"><button class="pvar__c" aria-pressed="{{ v.on }}" aria-disabled="{{ v.out }}" onClick="{{ v.go }}"><span>{{ v.n }}</span><b>{{ v.priceText }}</b></button></sc-for></div></sc-if>
 </div></sc-if>
 <sc-if value="{{ pd.soldOut }}" hint-placeholder-val="{{ false }}"><p class="am-help is-error" role="status">This option is sold out. Choose another.</p></sc-if>
-<div class="am-buy__row">
+<div class="pbuy__row">
 <div class="am-qty"><button aria-label="Decrease quantity" onClick="{{ qtyDec }}"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button><output>{{ qty }}</output><button aria-label="Increase quantity" onClick="{{ qtyInc }}"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button></div>
-<button class="am-btn am-btn--primary am-btn--lg" style="flex:1" aria-disabled="{{ pd.soldOut }}" onClick="{{ pd.add }}">{{ pd.addLabel }}</button>
-<button class="am-icon-btn" style="border:1.5px solid var(--line-strong)" aria-label="{{ pd.wishLabel }}" aria-pressed="{{ pd.wish }}" onClick="{{ pd.toggleWish }}"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></button>
+<button class="cx-btn cx-btn--solid cx-btn--lg pbuy__add" data-fly aria-disabled="{{ pd.soldOut }}" onClick="{{ pd.add }}"><span>{{ pd.addLabel }}</span></button>
+<button class="pbuy__wish wishbtn" aria-label="{{ pd.wishLabel }}" aria-pressed="{{ pd.wish }}" onClick="{{ pd.toggleWish }}"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></button>
 </div>
-<div class="am-assure">
-<div><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17" r="1.6"/><circle cx="17" cy="17" r="1.6"/></svg><span>Free shipping, 3 to 7 days</span></div>
-<div><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c0-9 5-14 15-14 0 10-5 15-14 15z"/><path d="M5 19c3-5 6-7 10-9"/></svg><span>Cruelty-free and vegan</span></div>
-<div><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg><span>15-day returns</span></div>
-</div>
-<div class="am-acc"><sc-for list="{{ pd.sections }}" as="a" hint-placeholder-count="5">
-<div class="am-acc__item"><h3><button class="am-acc__btn" aria-expanded="{{ a.open }}" onClick="{{ a.go }}">{{ a.title }}<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></h3>
-<sc-if value="{{ a.open }}" hint-placeholder-val="{{ false }}"><div class="am-acc__panel prose"><sc-for list="{{ a.blocks }}" as="b" hint-placeholder-count="4">
-<sc-if value="{{ b.isP }}" hint-placeholder-val="{{ true }}"><p>{{ b.x }}</p></sc-if><sc-if value="{{ b.isLi }}" hint-placeholder-val="{{ false }}"><p class="li">{{ b.x }}</p></sc-if><sc-if value="{{ b.isH }}" hint-placeholder-val="{{ false }}"><h3>{{ b.x }}</h3></sc-if><sc-if value="{{ b.isH3 }}" hint-placeholder-val="{{ false }}"><h3>{{ b.x }}</h3></sc-if>
-</sc-for></div></sc-if></div></sc-for></div>
+<button class="cx-btn cx-btn--ink cx-btn--lg pbuy__now" aria-disabled="{{ pd.soldOut }}" onClick="{{ pd.buyNow }}"><span>Buy now</span><svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+<ul class="pdeliv"><li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17" r="1.6"/><circle cx="17" cy="17" r="1.6"/></svg><span><b>Free shipping across India</b>Dispatched in 1 to 2 business days, delivered in 3 to 7.</span></li><li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c0-9 5-14 15-14 0 10-5 15-14 15z"/><path d="M5 19c3-5 6-7 10-9"/></svg><span><b>Vegan and cruelty-free</b>Never tested on animals.</span></li><li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg><span><b>15-day returns</b>For defective, damaged or wrong items.</span></li></ul>
 </div>
 </div>
-<section class="sec-tint sec"><div class="am-wrap" style="width:100%">
-<div class="am-sec-head"><div><p class="am-eyebrow">You may also like</p><h2 class="am-display-md">More to love</h2></div></div>
-<div class="cols-4 rail-m"><sc-for list="{{ pd.related }}" as="c" hint-placeholder-count="4"><dc-import name="PCard" item="{{ c }}" hint-size="100%,520px"></dc-import></sc-for></div>
-</div></section>
-<sc-if value="{{ pd.hasRecent }}" hint-placeholder-val="{{ false }}"><section class="am-wrap sec" style="width:100%"><div class="am-sec-head"><div><p class="am-eyebrow">Recently viewed</p><h2 class="am-display-md">Pick up where you left off</h2></div></div><div class="cols-4 rail-m"><sc-for list="{{ pd.recent }}" as="c" hint-placeholder-count="2"><dc-import name="PCard" item="{{ c }}" hint-size="100%,520px"></dc-import></sc-for></div></section></sc-if>
+
+<!-- STORY -->
+<sc-if value="{{ pd.hasStory }}" hint-placeholder-val="{{ true }}"><section class="pstory" data-mo="reveal"><div class="am-wrap pstory__in">
+<div class="pstory__imgs"><sc-for list="{{ pd.storyImgs }}" as="im" hint-placeholder-count="2"><span class="pstory__i {{ im.cls }}" style="background-image: url({{ im.src }}); background-size: {{ im.size }}; background-position: {{ im.pos }}" role="img" aria-label="Product story photo"></span></sc-for></div>
+<div class="pstory__txt"><p class="cx-kick"><i></i>The story</p><h2 class="cx-h2">{{ pd.storyTitle }}</h2>
+<div class="prose"><sc-for list="{{ pd.story }}" as="b" hint-placeholder-count="3"><sc-if value="{{ b.isP }}" hint-placeholder-val="{{ true }}"><p>{{ b.x }}</p></sc-if><sc-if value="{{ b.isLi }}" hint-placeholder-val="{{ false }}"><p class="li">{{ b.x }}</p></sc-if><sc-if value="{{ b.isH }}" hint-placeholder-val="{{ false }}"><h3>{{ b.x }}</h3></sc-if></sc-for></div></div>
+</div></section></sc-if>
+
+<!-- BENEFITS -->
+<sc-if value="{{ pd.hasBenefits }}" hint-placeholder-val="{{ true }}"><section class="pben"><div class="am-wrap"><div class="cx-head"><div><p class="cx-kick"><i></i>Key benefits</p><h2 class="cx-h2">Why you will <em>love it</em></h2></div></div>
+<ol class="pben__g"><sc-for list="{{ pd.benefits }}" as="b" hint-placeholder-count="5"><li class="pben__c"><span class="pben__n">{{ b.n }}</span><sc-if value="{{ b.hasT }}" hint-placeholder-val="{{ true }}"><b>{{ b.t }}</b></sc-if><p>{{ b.x }}</p></li></sc-for></ol></div></section></sc-if>
+
+<!-- TABS: ingredients, how to use, specifications -->
+<sc-if value="{{ pd.hasTabs }}" hint-placeholder-val="{{ true }}"><section class="ptabs"><div class="am-wrap">
+<div class="ptabs__bar" role="tablist" aria-label="Product information"><sc-for list="{{ pd.tabs }}" as="t" hint-placeholder-count="3"><button class="ptabs__t" role="tab" aria-selected="{{ t.on }}" onClick="{{ t.go }}">{{ t.label }}</button></sc-for></div>
+<div class="ptabs__panel prose" role="tabpanel" data-tabkey="{{ pd.tabKey }}"><sc-for list="{{ pd.panel }}" as="b" hint-placeholder-count="4"><sc-if value="{{ b.isP }}" hint-placeholder-val="{{ true }}"><p>{{ b.x }}</p></sc-if><sc-if value="{{ b.isLi }}" hint-placeholder-val="{{ false }}"><p class="li">{{ b.x }}</p></sc-if><sc-if value="{{ b.isH }}" hint-placeholder-val="{{ false }}"><h3>{{ b.x }}</h3></sc-if><sc-if value="{{ b.isH3 }}" hint-placeholder-val="{{ false }}"><h3>{{ b.x }}</h3></sc-if></sc-for></div>
+</div></section></sc-if>
+
+<!-- FAQ -->
+<section class="pfaq"><div class="am-wrap pfaq__in"><div><p class="cx-kick"><i></i>Questions</p><h2 class="cx-h2">Good to <em>know</em></h2></div>
+<div class="pfaq__l"><sc-for list="{{ pd.faq }}" as="a" hint-placeholder-count="4"><div class="pfaq__i"><h3><button class="pfaq__q" aria-expanded="{{ a.open }}" onClick="{{ a.go }}"><span>{{ a.q }}</span><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button></h3><div class="pfaq__a {{ a.cls }}"><div><p>{{ a.a }}</p></div></div></div></sc-for></div></div></section>
+
+<!-- RELATED -->
+<section class="cx-rail pd__rel"><div class="am-wrap"><div class="cx-head"><div><p class="cx-kick"><i></i>You may also like</p><h2 class="cx-h2">More to <em>love</em></h2></div></div>
+<div class="cols-4 rail-m"><sc-for list="{{ pd.related }}" as="c" hint-placeholder-count="4"><dc-import name="PCard" item="{{ c }}" hint-size="100%,520px"></dc-import></sc-for></div></div></section>
+<sc-if value="{{ pd.hasRecent }}" hint-placeholder-val="{{ false }}"><section class="cx-rail"><div class="am-wrap"><div class="cx-head"><div><p class="cx-kick"><i></i>Recently viewed</p><h2 class="cx-h2">Pick up where you <em>left off</em></h2></div></div><div class="cols-4 rail-m"><sc-for list="{{ pd.recent }}" as="c" hint-placeholder-count="2"><dc-import name="PCard" item="{{ c }}" hint-size="100%,520px"></dc-import></sc-for></div></div></section></sc-if>
+
+<!-- MOBILE STICKY BUY BAR -->
+<div class="pstick" role="region" aria-label="Purchase"><div class="pstick__p"><b>{{ pd.priceText }}</b><span>{{ pd.variantName }}</span></div><button class="cx-btn cx-btn--solid" data-fly aria-disabled="{{ pd.soldOut }}" onClick="{{ pd.add }}"><span>{{ pd.addLabel }}</span></button></div>
+</article>
 </sc-if>
+
 
 <!-- CART PAGE -->
 <sc-if value="{{ show.cart }}" hint-placeholder-val="{{ false }}">
-<div class="am-wrap" style="width:100%;padding-block:40px 72px">
-<h1 class="am-display-lg">Your bag</h1>
-<sc-if value="{{ cartEmpty }}" hint-placeholder-val="{{ false }}"><div class="empty-big"><span class="am-sparkle"><svg class="ic-fill" width="32" height="32" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c.8 5.5 4.5 9.2 10 10-5.5.8-9.2 4.5-10 10-.8-5.5-4.5-9.2-10-10 5.5-.8 9.2-4.5 10-10z"/></svg></span><b class="am-h-md" style="color:var(--ink)">Your cart is empty</b><button class="am-btn am-btn--primary" onClick="{{ goAll }}">Continue shopping</button></div></sc-if>
-<sc-if value="{{ hasCart }}" hint-placeholder-val="{{ true }}"><div class="co" style="padding-block:24px 0">
-<div class="lines"><sc-for list="{{ lines }}" as="l" hint-placeholder-count="2">
-<div class="cline">
-<sc-if value="{{ l.hasImg }}" hint-placeholder-val="{{ true }}"><img class="cimg" src="{{ l.img }}" alt="" loading="lazy" decoding="async"></sc-if><sc-if value="{{ l.noImg }}" hint-placeholder-val="{{ false }}"><span class="cph" style="background: radial-gradient(circle at 35% 30%, #ffffff, {{ l.tint }} 75%)"></span></sc-if>
-<div><h4>{{ l.name }}</h4><small>{{ l.variantText }}</small><div class="am-qty"><button aria-label="Decrease quantity" onClick="{{ l.dec }}"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button><output>{{ l.qty }}</output><button aria-label="Increase quantity" onClick="{{ l.inc }}"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button></div></div>
-<div style="text-align:right"><b class="am-num">{{ l.totalText }}</b><br><button class="am-line__rm" onClick="{{ l.remove }}">Remove</button></div>
-</div></sc-for></div>
-<aside class="panel" aria-label="Order summary"><h2>Summary</h2>
-<div class="am-pill-input"><input type="text" placeholder="Discount code" aria-label="Discount code" value="{{ code }}" onInput="{{ onCode }}"><button class="am-btn am-btn--outline am-btn--sm" type="button" onClick="{{ applyCode }}">Apply</button></div>
+<section class="ct-hero"><div class="am-wrap ct-hero__in"><div><p class="cx-kick"><i></i>Your selection</p><h1 class="cx-h2">Your <em>bag</em></h1></div><p class="ct-hero__n">{{ cartN }} <small>{{ cartWord }}</small></p></div></section>
+<div class="am-wrap ct-wrap" style="width:100%">
+<sc-if value="{{ cartEmpty }}" hint-placeholder-val="{{ false }}"><div class="ct-empty"><span class="ct-empty__o" aria-hidden="true"></span><b>Your bag is waiting</b><p>Add a lipstick or the Fairy Dew Serum to start your glow.</p><button class="cx-btn cx-btn--solid" onClick="{{ goAll }}"><span>Continue shopping</span></button></div></sc-if>
+<sc-if value="{{ hasCart }}" hint-placeholder-val="{{ true }}"><div class="ct-grid">
+<ul class="ct-lines"><sc-for list="{{ lines }}" as="l" hint-placeholder-count="2">
+<li class="ct-line">
+<span class="ct-line__img"><sc-if value="{{ l.hasImg }}" hint-placeholder-val="{{ true }}"><img src="{{ l.img }}" alt="" loading="lazy" decoding="async"></sc-if><sc-if value="{{ l.noImg }}" hint-placeholder-val="{{ false }}"><span class="cph" style="background: radial-gradient(circle at 35% 30%, #ffffff, {{ l.tint }} 75%)"></span></sc-if></span>
+<div class="ct-line__t"><h3>{{ l.name }}</h3><small>{{ l.variantText }}</small><div class="am-qty"><button aria-label="Decrease quantity" onClick="{{ l.dec }}"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button><output>{{ l.qty }}</output><button aria-label="Increase quantity" onClick="{{ l.inc }}"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button></div></div>
+<div class="ct-line__p"><b>{{ l.totalText }}</b><button class="am-line__rm" onClick="{{ l.remove }}">Remove</button></div>
+</li></sc-for>
+<li class="ct-note"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17" r="1.6"/><circle cx="17" cy="17" r="1.6"/></svg><span>Free shipping on this order. Dispatched in 1 to 2 business days, delivered in 3 to 7.</span></li>
+</ul>
+<aside class="ct-sum" aria-label="Order summary"><h2>Summary</h2>
+<div class="ct-code"><input type="text" placeholder="Discount code" aria-label="Discount code" value="{{ code }}" onInput="{{ onCode }}"><button class="cx-btn cx-btn--line cx-btn--sm" type="button" onClick="{{ applyCode }}">Apply</button></div>
 <sc-if value="{{ codeMsg.has }}" hint-placeholder-val="{{ false }}"><p class="{{ codeMsg.cls }}" role="status">{{ codeMsg.text }}</p></sc-if>
-<div class="stack gap8"><div class="sumline"><span>Subtotal</span><span>{{ sum.subText }}</span></div><sc-if value="{{ sum.hasDisc }}" hint-placeholder-val="{{ false }}"><div class="sumline"><span>Discount (SAVE10)</span><span>{{ sum.discText }}</span></div></sc-if><div class="sumline"><span>Shipping</span><span style="color:var(--success)">Free</span></div><div class="sumline tot"><span>Total</span><span>{{ sum.totText }}</span></div></div>
-<button class="am-btn am-btn--primary am-btn--lg am-btn--block" onClick="{{ goCheckout }}">Checkout</button>
-<button class="am-btn am-btn--ghost am-btn--block" onClick="{{ goAll }}">Continue shopping</button>
+<div class="sumline"><span>Subtotal</span><span>{{ sum.subText }}</span></div><sc-if value="{{ sum.hasDisc }}" hint-placeholder-val="{{ false }}"><div class="sumline"><span>Discount (SAVE10)</span><span>{{ sum.discText }}</span></div></sc-if><div class="sumline"><span>Shipping</span><span class="ct-free">Free</span></div><div class="sumline tot"><span>Total</span><span>{{ sum.totText }}</span></div>
+<button class="cx-btn cx-btn--solid cx-btn--lg ct-go" onClick="{{ goCheckout }}"><span>Checkout</span><svg class="ic" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+<button class="cx-link" onClick="{{ goAll }}">Continue shopping</button>
+<ul class="ct-trust"><li>Vegan and cruelty-free</li><li>15-day returns</li><li>Taxes included</li></ul>
 </aside>
 </div></sc-if>
 </div>
+<sc-if value="{{ hasCart }}" hint-placeholder-val="{{ true }}"><section class="cx-rail"><div class="am-wrap"><div class="cx-head"><div><p class="cx-kick"><i></i>Complete the look</p><h2 class="cx-h2">Add a little <em>more</em></h2></div></div><div class="cols-4 rail-m"><sc-for list="{{ cartRec }}" as="c" hint-placeholder-count="4"><dc-import name="PCard" item="{{ c }}" hint-size="100%,520px"></dc-import></sc-for></div></div></section></sc-if>
 </sc-if>
 
 <!-- CHECKOUT -->
@@ -565,6 +577,29 @@
 </footer>
 </sc-if>
 
+<!-- SEARCH OVERLAY -->
+<div class="sov {{ searchCls }}" role="dialog" aria-modal="true" aria-label="Search" aria-hidden="{{ searchHidden }}">
+<button class="sov__bg" aria-label="Close search" onClick="{{ closeSearch }}"></button>
+<div class="sov__in">
+<button class="cx-round sov__x" aria-label="Close search" onClick="{{ closeSearch }}"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+<form class="sov__f" role="search" onSubmit="{{ submitSearchOv }}"><svg class="ic" width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="sovq" type="search" placeholder="Search lipstick, serum, kajal" aria-label="Search products" autocomplete="off" value="{{ q }}" onInput="{{ onSearch }}"></form>
+<sc-if value="{{ ovIdle }}" hint-placeholder-val="{{ true }}"><div class="sov__sug"><p class="cx-kick"><i></i>Popular right now</p><div class="sov__chips"><sc-for list="{{ ovChips }}" as="c" hint-placeholder-count="6"><button class="cl-chip" onClick="{{ c.go }}">{{ c.label }}</button></sc-for></div></div></sc-if>
+<sc-if value="{{ ovHas }}" hint-placeholder-val="{{ false }}"><div class="sov__res"><sc-for list="{{ ovRes }}" as="r" hint-placeholder-count="4"><button class="sov__r" onClick="{{ r.go }}"><span class="sov__ri"><img src="{{ r.img }}" alt="" loading="lazy" decoding="async"></span><span class="sov__rt"><small>{{ r.cat }}</small><b>{{ r.name }}</b><span>{{ r.priceText }}</span></span></button></sc-for></div><button class="cx-link" onClick="{{ submitSearchOv }}">View all results <svg class="ic" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></sc-if>
+<sc-if value="{{ ovNone }}" hint-placeholder-val="{{ false }}"><p class="sov__none">No products found. Try another word, or browse <button class="link" onClick="{{ goAllClose }}">all products</button>.</p></sc-if>
+</div></div>
+
+<!-- QUICK VIEW -->
+<sc-if value="{{ qv.open }}" hint-placeholder-val="{{ false }}"><div class="qv" role="dialog" aria-modal="true" aria-label="Quick view"><button class="qv__bg" aria-label="Close quick view" onClick="{{ qv.close }}"></button>
+<div class="qv__box pd--{{ qv.theme }}" style="--tint: {{ qv.tint }}"><button class="cx-round qv__x" aria-label="Close quick view" onClick="{{ qv.close }}"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+<div class="qv__art"><span class="qv__halo" aria-hidden="true"></span><img src="{{ qv.img }}" alt="{{ qv.name }}"></div>
+<div class="qv__txt"><p class="cx-kick"><i></i>{{ qv.cat }}</p><h2 class="qv__h">{{ qv.name }}</h2><p class="pbuy__sub">{{ qv.sub }}</p>
+<div class="pbuy__price"><b>{{ qv.priceText }}</b><sc-if value="{{ qv.hasMrp }}" hint-placeholder-val="{{ true }}"><s>{{ qv.mrpText }}</s><em>{{ qv.offText }}</em></sc-if></div>
+<sc-if value="{{ qv.hasVariants }}" hint-placeholder-val="{{ true }}"><div class="pvar"><div class="pvar__head"><b>{{ qv.variantLabel }}</b><span class="pvar__cur">{{ qv.variantName }}</span></div>
+<sc-if value="{{ qv.swatches }}" hint-placeholder-val="{{ true }}"><div class="pvar__sw"><sc-for list="{{ qv.variants }}" as="v" hint-placeholder-count="6"><button class="pvar__s {{ v.cls }}" aria-checked="{{ v.on }}" aria-disabled="{{ v.out }}" aria-label="{{ v.label }}" title="{{ v.n }}" style="--sw: {{ v.c }}" onClick="{{ v.go }}"></button></sc-for></div></sc-if>
+<sc-if value="{{ qv.chips }}" hint-placeholder-val="{{ false }}"><div class="pvar__ch"><sc-for list="{{ qv.variants }}" as="v" hint-placeholder-count="2"><button class="pvar__c" aria-pressed="{{ v.on }}" aria-disabled="{{ v.out }}" onClick="{{ v.go }}"><span>{{ v.n }}</span><b>{{ v.priceText }}</b></button></sc-for></div></sc-if></div></sc-if>
+<div class="cx-cta"><button class="cx-btn cx-btn--solid" data-fly aria-disabled="{{ qv.out }}" onClick="{{ qv.add }}"><span>{{ qv.addLabel }}</span></button><button class="cx-btn cx-btn--line" onClick="{{ qv.view }}">Full details</button></div></div>
+</div></div></sc-if>
+
 <!-- FILTER DRAWER -->
 <div class="am-scrim {{ filterCls }}" onClick="{{ closeFilter }}"></div>
 <aside class="ldrawer {{ filterCls }}" aria-label="Filters" aria-modal="true" role="dialog">
@@ -572,6 +607,7 @@
 <div class="ldrawer__body fbody">
 <div class="fsec"><h4>Collection</h4><div class="tabs"><sc-for list="{{ filterCats }}" as="c" hint-placeholder-count="7"><button class="am-chip" aria-pressed="{{ c.on }}" onClick="{{ c.go }}">{{ c.label }}</button></sc-for></div></div>
 <div class="fsec"><h4>Availability</h4><button class="fswitch" role="switch" aria-checked="{{ stockOnly }}" onClick="{{ toggleStock }}"><span>In stock only</span><i></i></button></div>
+<sc-if value="{{ list.hasShades }}" hint-placeholder-val="{{ false }}"><div class="fsec"><h4>Shade family</h4><div class="tabs"><sc-for list="{{ list.shadeGroups }}" as="g" hint-placeholder-count="5"><button class="am-chip" aria-pressed="{{ g.on }}" onClick="{{ g.go }}">{{ g.label }}</button></sc-for></div></div></sc-if>
 <div class="fsec"><h4>Price</h4><div class="tabs"><sc-for list="{{ priceChips }}" as="p" hint-placeholder-count="4"><button class="am-chip" aria-pressed="{{ p.on }}" onClick="{{ p.go }}">{{ p.label }}</button></sc-for></div></div>
 </div>
 <div class="ldrawer__foot"><button class="am-btn am-btn--outline" onClick="{{ clearFilters }}">Clear all</button><button class="am-btn am-btn--primary" style="flex:1" onClick="{{ closeFilter }}">{{ filterShow }}</button></div>
@@ -617,7 +653,7 @@ state = {
   vi: 0, qty: 1, img: 0, open: 0, code: '', codeOk: false, codeErr: false, pay: 'upi',
   form: {}, errs: {}, cform: {}, cerrs: {}, csent: false, lform: {}, lerrs: {}, sform: {}, serrs: {}, pform: {}, user: null, orders: [], order: null,
   nl: '', nlErr: false, toast: '', toastOn: false, slide: 0, car: 0, now: Date.now(), video: -1, tone: 'medium', tab: 'in', gModal: false, acctTab: 'orders', aform: {},
-  topShow: false, recent: [], chip: { x: 24, y: 520 }, hold: false, sortOpen: false, mopen: '', navOpen: '', pg: 0, cols: 4, btag: 'All', zoomOpen: false, zoomed: false, filterOpen: false, cars: { trend: 0, lips: 0, eyes: 0, combo: 0 }
+  topShow: false, labVi: 0, recent: [], chip: { x: 24, y: 520 }, hold: false, sortOpen: false, mopen: '', navOpen: '', pg: 0, loadN: 1, shadeF: '', qv: null, searchOpen: false, cols: 4, btag: 'All', zoomOpen: false, zoomed: false, filterOpen: false, qv: null, searchOpen: false, shadeF: '', tab2: '', loadN: 1, cars: { trend: 0, lips: 0, eyes: 0, combo: 0 }
 };
 
 componentDidMount() {
@@ -649,8 +685,21 @@ componentDidMount() {
     window.addEventListener('mouseup', this._up); window.addEventListener('touchend', this._up);
     this._tp = (e) => { if (e.target && e.target.closest && e.target.closest('.rail-m')) this._pause = Date.now() + 6000; };
     window.addEventListener('touchstart', this._tp); window.addEventListener('wheel', this._tp);
-    this._kd = (e) => { const st = this.state; if (!st.zoomOpen) return; if (e.key === 'Escape') this.setState({ zoomOpen: false, zoomed: false }); else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { const n = this._gn || 1; this.setState({ img: (st.img + (e.key === 'ArrowRight' ? 1 : -1) + n) % n, zoomed: false }); } };
+    this._kd = (e) => { const st = this.state; if (e.key === 'Escape' && (st.searchOpen || st.qv)) { this.setState({ searchOpen: false, qv: null }); return; } if (!st.zoomOpen) return; if (e.key === 'Escape') this.setState({ zoomOpen: false, zoomed: false }); else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { const n = this._gn || 1; this.setState({ img: (st.img + (e.key === 'ArrowRight' ? 1 : -1) + n) % n, zoomed: false }); } };
     window.addEventListener('keydown', this._kd);
+    this._hc = () => {
+      if (this._skipHash) { this._skipHash = false; return; }
+      if (!this._go) return;
+      const h = (location.hash || '').replace(/^#\/?/, ''), parts = h.split('/');
+      if (!h || parts[0] === '') { this._go('home', undefined, true); return; }
+      if (parts[0] === 'shop') { this._go('list', { col: this._cols[parts[1]] ? parts[1] : 'all' }, true); return; }
+      if (parts[0] === 'product') { const r = this._byHandle(parts[1] || ''); if (r) { this._go(r[0], r[1], true); return; } }
+      if (parts[0] === 'blog' && parts[1]) { const a = this._arts.find((x) => x.handle === parts[1] || x.id === parts[1]); if (a) { this._go('article', { id: a.id }, true); return; } }
+      if (this._pages.includes(parts[0])) { this._go(parts[0], undefined, true); return; }
+      this._go('home', undefined, true);
+    };
+    window.addEventListener('hashchange', this._hc);
+    setTimeout(() => { if (location.hash && location.hash.length > 2 && this._go) this._hc(); }, 0);
     this._sc = () => { const on = (window.pageYOffset || document.documentElement.scrollTop || 0) > 500; if (on !== this.state.topShow) this.setState({ topShow: on }); };
     window.addEventListener('scroll', this._sc, { passive: true });
     this.setState({ chip: { x: 24, y: Math.max(240, window.innerHeight - 150) } });
@@ -703,6 +752,7 @@ renderVals() {
     { v: 'assets/6f54597efaf0.mp4', p: 'assets/ee82ac414b97.webp' }
   ];
   const V = (a) => a.map((x) => ({ n: x[0], c: x[1], avail: x[2] !== false, img: x[3] || '' }));
+  const M = (k) => 'assets/m_' + k + '.jpg';
   const money = (n) => '₹' + n.toLocaleString('en-IN');
   const P = [
     { id: 'lipstick', name: 'Siren Silk Liquid Lipsticks', sub: 'Smudge-proof, transfer-proof, 12-hour wear, 12 shades', cats: ['lips', 'lipstick', 'trending'], cat: 'Lips', catKey: 'lips', price: 699, mrp: 999, img: I.lipstick, model: I.mLipstick, vlabel: 'Color',
@@ -747,15 +797,24 @@ renderVals() {
     setting: { t: 'Makeup setting spray', d: 'Luminous mist in two shades.' }, mascara: { t: 'Mascara', d: 'Waterproof volumizing mascara.' },
     kajal: { t: 'Kajal', d: 'Celestial Dream kohl kajal in five shades.' }, compact: { t: 'Compact', d: 'Oil-free matte compact powder.' }
   };
-  const MODELS = [I.mDew, I.mLipstick, I.mMini, I.mKajal, I.mMascara, I.mStrobe];
+  const MODELS = [M('skin_b'), M('lips_b'), M('lips_d'), M('eyes_b'), M('mascara_a'), M('face_a')];
 
-  const go = (page, arg) => {
-    const st = this.state, u = { page, arg: arg === undefined ? null : arg, navOpen: '', pg: 0, zoomOpen: false, zoomed: false, filterOpen: false, menu: false, drawer: false, vi: (arg && arg.vi) || 0, qty: 1, img: 0, open: 0, errs: {}, cerrs: {}, lerrs: {}, serrs: {}, csent: false, gModal: false, q: page === 'search' ? st.q : '' };
+  const encHash = (page, arg) => {
+    if (page === 'home') return '#/';
+    if (page === 'list') return '#/shop/' + ((arg && arg.col) || 'all');
+    if (page === 'product' && arg) { const r = DATA.sitemap.find((x) => x[1] === arg.id && x[2] === (arg.vi || 0)); return '#/product/' + (r ? r[3] : arg.id + '~' + (arg.vi || 0)); }
+    if (page === 'article' && arg) { const a = DATA.arts.find((x) => x.id === arg.id); return '#/blog/' + (a ? a.handle : arg.id); }
+    return '#/' + page;
+  };
+  const go = (page, arg, fromHash) => {
+    const st = this.state, u = { page, arg: arg === undefined ? null : arg, navOpen: '', pg: 0, zoomOpen: false, zoomed: false, filterOpen: false, menu: false, drawer: false, vi: (arg && arg.vi) || 0, qty: 1, img: 0, open: 0, tab2: '', errs: {}, cerrs: {}, lerrs: {}, serrs: {}, csent: false, gModal: false, q: page === 'search' ? st.q : '' };
     if (page === 'product' && arg && arg.id) u.recent = [arg.id, ...st.recent.filter((x) => x !== arg.id)].slice(0, 6);
     this.setState(u);
     try { window.scrollTo(0, 0); } catch (e) { /* no scroll in preview */ }
     seoMeta(page, arg);
+    if (!fromHash) { try { const h = encHash(page, arg); if (location.hash !== h) { this._skipHash = true; location.hash = h; } } catch (e) { /* no location */ } }
   };
+  this._go = go; this._byHandle = (h) => { const r = DATA.sitemap.find((x) => x[3] === h); if (r) return ['product', { id: r[1], vi: r[2] }]; const m = h.match(/^([a-z]+)~(\d+)$/); if (m && byId(m[1])) return ['product', { id: m[1], vi: +m[2] }]; return null; }; this._arts = DATA.arts; this._cols = COLS; this._pages = ['cart', 'checkout', 'login', 'account', 'search', 'wish', 'blog', 'contact', 'sitemap', 'finder', 'about', 'shipping', 'returns', 'privacy', 'terms'];
   /* page-specific title, description and a self-referencing canonical (no backend needed) */
   const seoMeta = (page, arg) => {
     try {
@@ -785,15 +844,26 @@ renderVals() {
     note('Product added to cart!');
   };
   const toggleWish = (id) => { const w = { ...this.state.wish }; const on = !w[id]; if (on) w[id] = true; else delete w[id]; this.setState({ wish: w }); note(on ? 'Saved to wishlist' : 'Removed from wishlist'); };
-  const card = (p) => {
+  const CUT = /assets\/(0621c73cc05a|1f031dea4324|3317e4a76cc1|57a92d45e414|5b845e99d660|71a275273bd5|7406675d9f2f|7a37dbc47a5d|916e3c5dceba|b46c3f273fd5|cfdfeccdeaa6|d40f24e76f69|d965e72c8076|df690ce23030)\./;
+  const THEMES = { lipstick: 'lipstick', mini: 'lipstick', mousse: 'lipstick', gloss: 'gloss', kajal: 'eyes', mascara: 'eyes', blush: 'blush', compact: 'face', mist: 'face', strobe: 'face', dew: 'serum', shimmer: 'serum', glam: 'combo', essential: 'combo', glowkit: 'combo', kajalcombo: 'combo', lipcombo: 'combo' };
+  const altOf = (p, vi) => {
+    const g = GAL[p.id + '_' + (vi || 0)] || GAL[p.id + '_0'];
+    if (g && g.n >= 3) return { st: 'background-image:url(assets/' + g.id + ');background-size:' + (g.n * 100) + '% 100%;background-position:' + (2 * 100 / (g.n - 1)) + '% 0' };
+    if (p.model) return { st: 'background-image:url(' + p.model + ');background-size:cover;background-position:center' };
+    return { st: '' };
+  };
+  const openQV = (id, vi) => () => this.setState({ qv: { id, vi: vi || 0 } });
+  const card = (p, ix) => {
     const lo = Math.min(...p.variants.map((v) => vPrice(p, v))), multi = p.variants.length > 1;
     const from = p.variants.some((v) => vPrice(p, v) !== lo), mrp = vMrp(p, p.variants[0]), o = mrp ? Math.round((1 - lo / mrp) * 100) : 0, colored = p.variants.every((v) => v.c);
+    const th = THEMES[p.id] || 'face', alt = altOf(p, 0), ok = p.variants.some((v) => v.avail);
     return {
-      id: p.id, hasBadge: !!mrp && o >= 25, badge: o + '% OFF', wish: !!this.state.wish[p.id], wishLabel: 'Save ' + p.name + ' to wishlist', toggle: () => toggleWish(p.id),
-      viewLabel: 'View ' + p.name, open: () => go('product', { id: p.id, vi: 0 }), hasImg: !!p.img, noImg: !p.img, img: p.img, name: p.name, phText: 'Photo coming soon', tint: (p.variants[0].c || '#f4b6c8'),
-      cat: p.cat, sub: p.sub, dots: colored && multi ? p.variants.slice(0, 5) : [], hasMore: colored && p.variants.length > 5, moreText: '+' + (p.variants.length - 5),
+      id: p.id, theme: 'pc pc--' + th + (alt.st ? ' has-alt' : '') + (ok ? '' : ' is-out') + (!CUT.test(p.img || '') ? ' pc--photo' : ''), hasBadge: !!mrp && o >= 25, badge: o + '% OFF', wish: !!this.state.wish[p.id], wishLabel: 'Save ' + p.name + ' to wishlist', toggle: () => toggleWish(p.id),
+      viewLabel: 'View ' + p.name, open: () => go('product', { id: p.id, vi: 0 }), hasImg: !!p.img, noImg: !p.img, img: p.img, name: p.name, phText: 'Photo coming soon', tint: (p.variants[0].c || '#d9b9a0'),
+      cat: p.cat, sub: p.sub, dots: colored && multi ? p.variants.slice(0, 6).map((v, i) => ({ n: v.n, c: v.c, go: () => go('product', { id: p.id, vi: i }) })) : [], hasMore: colored && p.variants.length > 6, moreText: '+' + (p.variants.length - 6),
+      vcount: multi ? p.variants.length + ' ' + (p.vlabel === 'Color' || p.vlabel === 'Shade' || p.vlabel === 'Shades' ? 'shades' : 'options') : '', hasVcount: multi, altStyle: alt.st, hasAlt: !!alt.st, num: ix === undefined ? '' : (ix < 9 ? '0' : '') + (ix + 1),
       priceText: (from ? 'From ' : '') + money(lo), hasMrp: !!mrp, mrpText: money(mrp || 0), offText: o + '% off',
-      addLabel: multi ? 'Choose option' : 'Quick add', add: () => (multi ? go('product', { id: p.id, vi: 0 }) : addToCart(p.id, 0, 1))
+      addLabel: multi ? 'Choose shade' : 'Add to bag', add: () => (multi ? go('product', { id: p.id, vi: 0 }) : addToCart(p.id, 0, 1)), quick: openQV(p.id, 0), quickLabel: 'Quick view ' + p.name
     };
   };
   const colGo = (k) => () => go('list', { col: k });
@@ -891,19 +961,36 @@ renderVals() {
 
   /* list pages */
   const lo = (p) => Math.min(...p.variants.map((v) => vPrice(p, v)));
-  const famEntries = (arr) => arr.map((p, i) => ({ name: p.name, price: lo(p), idx: i, avail: p.variants.some((v) => v.avail), card: card(p) }));
+  const famEntries = (arr) => arr.map((p, i) => ({ name: p.name, price: lo(p), idx: i, avail: p.variants.some((v) => v.avail), groups: Array.from(new Set(p.variants.map((v) => shadeGroup(v.c)).filter(Boolean))), card: card(p, i) }));
+  const shadeGroup = (hex) => {
+    if (!hex || hex[0] !== '#' || hex.length < 7) return '';
+    const r = parseInt(hex.slice(1, 3), 16) / 255, g = parseInt(hex.slice(3, 5), 16) / 255, b = parseInt(hex.slice(5, 7), 16) / 255;
+    const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2, d = mx - mn;
+    let h = 0; if (d) { h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; h = (h * 60 + 360) % 360; }
+    const sat = d ? d / (1 - Math.abs(2 * l - 1)) : 0;
+    if (l < .14 || (sat < .2 && l < .3)) return 'dark';
+    if (h > 160 && h < 280) return 'dark';
+    if (sat < .45 || (h >= 10 && h < 45 && l > .35)) return 'nude';
+    if (h >= 290 || h < 8 ? l < .33 : false) return 'berry';
+    if (h >= 280 && h < 330) return 'berry';
+    if (h >= 330 || h < 8) return l > .6 ? 'pink' : (sat > .7 && l > .38 ? 'red' : 'berry');
+    return h < 20 ? 'red' : 'nude';
+  };
+  const SHADE_GROUPS = [['pink', 'Pinks'], ['red', 'Reds'], ['berry', 'Berries and wines'], ['nude', 'Nudes and browns'], ['dark', 'Deep and cool']];
   const entryCard = (r, i) => {
     const p = byId(r[1]), v = p.variants[r[2]], vp = vPrice(p, v), vm = vMrp(p, v), o = vm ? Math.round((1 - vp / vm) * 100) : 0, img = v.img || p.img, name = r[0].replace(/\s+,/g, ',').replace(/\s+/g, ' ').trim();
-    return { name, price: vp, idx: i, avail: v.avail, card: { id: p.id, hasBadge: !v.avail || (!!vm && o >= 25), badge: v.avail ? o + '% OFF' : 'Sold out', wish: !!this.state.wish[p.id], wishLabel: 'Save ' + name + ' to wishlist', toggle: () => toggleWish(p.id), viewLabel: 'View ' + name, open: () => go('product', { id: p.id, vi: r[2] }), hasImg: !!img, noImg: !img, img, name, phText: 'Photo coming soon', tint: v.c || '#f4b6c8', cat: p.cat, sub: v.c && p.variants.length > 1 ? p.vlabel + ': ' + v.n : p.sub, dots: v.c && p.variants.length > 1 ? [v] : [], hasMore: false, moreText: '', priceText: money(vp), hasMrp: !!vm, mrpText: money(vm || 0), offText: o + '% off', addLabel: v.avail ? 'Quick add' : 'Sold out', add: () => addToCart(p.id, r[2], 1) } };
+    const base = card(p, i), alt = altOf(p, r[2]);
+    return { name, price: vp, idx: i, avail: v.avail, groups: [shadeGroup(v.c)], card: { ...base, theme: 'pc pc--' + (THEMES[p.id] || 'face') + (alt.st ? ' has-alt' : '') + (v.avail ? '' : ' is-out') + (!CUT.test(img || '') ? ' pc--photo' : ''), hasBadge: !v.avail || (!!vm && o >= 25), badge: v.avail ? o + '% OFF' : 'Sold out', wishLabel: 'Save ' + name + ' to wishlist', viewLabel: 'View ' + name, open: () => go('product', { id: p.id, vi: r[2] }), hasImg: !!img, noImg: !img, img, name, tint: v.c || '#d9b9a0', sub: v.c && p.variants.length > 1 ? p.vlabel + ': ' + v.n : p.sub, dots: v.c && p.variants.length > 1 ? [{ n: v.n, c: v.c, go: () => go('product', { id: p.id, vi: r[2] }) }] : [], hasMore: false, hasVcount: false, vcount: '', altStyle: alt.st, hasAlt: !!alt.st, priceText: money(vp), hasMrp: !!vm, mrpText: money(vm || 0), offText: o + '% off', addLabel: v.avail ? 'Add to bag' : 'Sold out', add: () => addToCart(p.id, r[2], 1), quick: openQV(p.id, r[2]) } };
   };
   let list = { title: '', desc: '', countText: '', cards: [], has: false, none: false, hasSubs: false, subs: [], hasFilters: true, noneTitle: '', noneText: '', resetLabel: '', reset: () => {}, hasPager: false, pageBtns: [], rangeText: '', prevDis: true, nextDis: true, prev: () => {}, next: () => {} };
   if (show.list) {
     let entries = [], t, d;
     if (page === 'list') {
       const c = COLS[arg.col] || COLS.all; t = c.t; d = c.d; list.hasSubs = !!c.subs; list.subs = (c.subs || []).map((k) => ({ label: COLS[k].t, go: colGo(k) }));
-      list.noneTitle = 'Nothing matches yet'; list.noneText = 'Try a different price range or show sold out items.'; list.resetLabel = 'Clear filters'; list.reset = () => this.setState({ stockOnly: false, price: 'any', pg: 0 });
+      list.noneTitle = 'Nothing matches yet'; list.noneText = 'Try a different price range or show sold out items.'; list.resetLabel = 'Clear filters'; list.reset = () => this.setState({ stockOnly: false, price: 'any', pg: 0, shadeF: '', loadN: 1 });
       entries = arg.col === 'all' ? DATA.sitemap.map(entryCard) : famEntries(P.filter((p) => p.cats.includes(arg.col)));
       if (s.stockOnly) entries = entries.filter((e) => e.avail);
+      if (s.shadeF) entries = entries.filter((e) => (e.groups || []).includes(s.shadeF));
       if (s.price === 'u600') entries = entries.filter((e) => e.price < 600); if (s.price === 'm') entries = entries.filter((e) => e.price >= 600 && e.price <= 800); if (s.price === 'o800') entries = entries.filter((e) => e.price > 800);
       const cmp = { az: (a, b) => a.name.localeCompare(b.name), za: (a, b) => b.name.localeCompare(a.name), low: (a, b) => a.price - b.price, high: (a, b) => b.price - a.price, old: (a, b) => b.idx - a.idx, new: (a, b) => a.idx - b.idx }[s.sort];
       if (cmp) entries = entries.slice().sort(cmp);
@@ -915,14 +1002,18 @@ renderVals() {
       t = 'Wishlist'; d = 'Products you have saved.'; entries = famEntries(P.filter((p) => s.wish[p.id]));
       list.noneTitle = 'Your wishlist is empty'; list.noneText = 'Tap the heart on any product to save it here.'; list.resetLabel = 'Shop all'; list.reset = () => go('list', { col: 'all' });
     }
-    const size = s.cols * 4, total = entries.length, pages = Math.max(1, Math.ceil(total / size)), cur = Math.min(s.pg, pages - 1);
-    const toPage = (n) => () => { this.setState({ pg: n }); try { window.scrollTo(0, 0); } catch (e) { /* ignore */ } };
-    list.hasFilters = page === 'list'; list.title = t; list.desc = d; list.cards = entries.slice(cur * size, cur * size + size).map((e) => e.card); list.has = total > 0; list.none = total === 0; list.countText = total + (total === 1 ? ' product' : ' products');
-    list.hasPager = pages > 1; list.rangeText = 'Showing ' + (cur * size + 1) + '–' + Math.min(total, (cur + 1) * size) + ' of ' + total + ' products';
-    list.pageBtns = Array.from({ length: pages }, (_, i) => ({ n: i + 1, cls: 'pgb' + (i === cur ? ' on' : ''), cur: i === cur, label: 'Page ' + (i + 1), go: toPage(i) }));
-    list.prevDis = cur === 0; list.nextDis = cur >= pages - 1; list.prev = toPage(Math.max(0, cur - 1)); list.next = toPage(Math.min(pages - 1, cur + 1));
+    const size = s.cols * 3, total = entries.length, shown = Math.min(total, size * Math.max(1, s.loadN));
+    list.hasFilters = page === 'list'; list.title = t; list.desc = d; list.cards = entries.slice(0, shown).map((e, k) => ({ ...e.card, num: (k < 9 ? '0' : '') + (k + 1) })); list.has = total > 0; list.none = total === 0; list.countText = total + (total === 1 ? ' product' : ' products'); list.total = total;
+    list.hasPager = shown < total; list.rangeText = 'Showing ' + shown + ' of ' + total; list.progress = total ? Math.round(shown / total * 100) : 0; list.moreLabel = 'Load ' + Math.min(size, total - shown) + ' more';
+    list.more = () => this.setState({ loadN: this.state.loadN + 1 });
+    list.shadeGroups = SHADE_GROUPS.map((g) => ({ label: g[1], on: s.shadeF === g[0], go: () => this.setState({ shadeF: s.shadeF === g[0] ? '' : g[0], loadN: 1 }) }));
+    const HERO = { lips: ['Lips · the colour edit', M('lips_b'), I.lipstick], eyes: ['Eyes · the drama edit', M('eyes_c'), I.kajal], face: ['Face · the glow edit', M('face_b'), I.strobe], skin: ['Skin · the care edit', M('face_c'), I.dew], combo: ['Combos · the gift edit', M('combo_b'), I.kit], all: ['The full collection', M('lips_a'), I.dew] };
+    const HK = { lips: 'lips', lipstick: 'lips', lipgloss: 'lips', mini: 'lips', mousse: 'lips', eyes: 'eyes', kajal: 'eyes', mascara: 'eyes', face: 'face', setting: 'face', blush: 'face', compact: 'face', skin: 'skin', serum: 'skin', combo: 'combo' };
+    const hk = page === 'list' ? (HK[arg.col] || 'all') : 'all', hc = page === 'list' ? HERO[hk] : (page === 'wish' ? ['Saved for later', M('mist_a'), I.pearl] : ['Search', M('lips_d'), I.mini]);
+    list.kicker = hc[0]; list.heroImg = hc[1]; list.heroProd = hc[2]; list.unit = total === 1 ? 'piece in this edit' : 'pieces in this edit';
+    list.hasShades = page === 'list' && ['all', 'lips', 'lipstick', 'face', 'blush', 'eyes', 'kajal', 'compact', 'mousse', 'lipgloss', 'mini'].includes(arg.col || 'all');
   }
-  const priceChips = [['any', 'Any price'], ['u600', 'Under ₹600'], ['m', '₹600 to ₹800'], ['o800', 'Over ₹800']].map((o) => ({ label: o[1], on: s.price === o[0], go: () => this.setState({ price: o[0], pg: 0 }) }));
+  const priceChips = [['any', 'Any price'], ['u600', 'Under ₹600'], ['m', '₹600 to ₹800'], ['o800', 'Over ₹800']].map((o) => ({ label: o[1], on: s.price === o[0], go: () => this.setState({ price: o[0], pg: 0, loadN: 1 }) }));
 
   /* product */
   let pd = { frames: [], cur: { src: '', size: '', pos: '' }, hasMulti: false, counter: '', prevImg: () => {}, nextImg: () => {}, openZoom: () => {}, variants: [], sections: [], related: [], hasVariants: false, recent: [], hasRecent: false };
@@ -949,6 +1040,41 @@ renderVals() {
       sections: det.map((a, i) => ({ title: a.title, open: s.open === i, blocks: a.blocks, go: () => this.setState({ open: s.open === i ? -1 : i }) })),
       related: P.filter((x) => x.id !== p.id && x.cats.some((c) => p.cats.includes(c))).slice(0, 4).map(card), recent: rec, hasRecent: rec.length > 0
     };
+    /* editorial layer: only real product data, anything missing is hidden */
+    const secs = DATA.details[p.id] || [];
+    const grab = (names) => secs.filter((x) => names.includes(x.h.toLowerCase()));
+    const flat = (arr) => arr.reduce((t, x) => t.concat(x.blocks), []);
+    const storyS = grab(['description', 'product description', 'sensory', 'about the product']);
+    const benS = grab(['benefits', 'highlights', 'features', 'additional highlights', 'unique selling points']);
+    const ingS = grab(['ingredients', 'key ingredients']);
+    const useS = grab(['how to use', 'usage', 'how to apply']);
+    const specS = grab(['product details', 'storage condition', 'free from']);
+    const story = flat(storyS).slice(0, 4).map(flag);
+    const benefits = flat(benS).filter((b) => !/^optional/i.test(b.x) && b.x.length > 12 && b.k !== 'h').slice(0, 8).map((b, i) => { const m = b.x.match(/^([^:–—\-]{3,38})\s*[:–—-]\s*(.{12,})$/); return { n: (i < 9 ? '0' : '') + (i + 1), hasT: !!m, t: m ? m[1].trim() : '', x: m ? m[2].trim() : b.x }; });
+    const tabDefs = [['ingredients', 'Ingredients', ingS], ['use', 'How to use', useS], ['specs', 'Specifications', specS]].filter((t) => t[2].length);
+    const tabKey = (tabDefs.find((t) => t[0] === s.tab2) || tabDefs[0] || ['', '', []])[0];
+    const panelSecs = (tabDefs.find((t) => t[0] === tabKey) || [0, 0, []])[2];
+    const storySprite = g ? (g.n >= 6 ? [4, 5] : g.n >= 5 ? [2, 4] : [1, Math.min(2, g.n - 1)]).filter((k) => k < g.n).map((k, n) => ({ src: 'assets/' + g.id, size: (g.n * 100) + '% 100%', pos: (k * 100 / (g.n - 1)) + '% 0', cls: 'pstory__i--' + (n + 1) })) : [];
+    const storyImgs = storySprite.length ? storySprite : [{ src: (p.model || vimg), size: 'cover', pos: 'center', cls: 'pstory__i--1' }, { src: vimg, size: 'contain', pos: 'center', cls: 'pstory__i--2' }].filter((x) => x.src);
+    const variantsText = p.variants.length > 1 ? p.variants.filter((x) => x.avail).map((x) => x.n).join(', ') : '';
+    const faqs = [
+      ['How long will delivery take?', 'Orders ship within 1 to 2 business days and arrive 3 to 7 business days after dispatch. Shipping is free on all orders.'],
+      ['Can I return or exchange it?', 'Return or replacement requests for defective, damaged, wrong or missing items are accepted within 15 days of delivery, with unused products in original packaging.'],
+      ['Is it vegan and cruelty-free?', 'Yes. Ammoha products are 100% vegan and never tested on animals.']
+    ];
+    if (variantsText) faqs.push(['Which ' + p.vlabel.toLowerCase() + 's are in stock?', variantsText + '.']);
+    const frN = frames.length;
+    Object.assign(pd, {
+      theme: THEMES[p.id] || 'face', kicker: p.cat + (p.variants.length > 1 ? ' · ' + p.variants.length + ' ' + (p.vlabel === 'Kit' ? 'kits' : 'options') : ''),
+      num: '0' + (idx + 1), total: '0' + frN, stockText: v && !v.avail ? 'Sold out' : 'In stock', stockCls: v && !v.avail ? 'is-out' : 'is-in',
+      buyNow: () => { if (v && !v.avail) { note('That option is sold out.'); return; } const cart = this.state.cart.slice(), k = cart.findIndex((l) => l.id === p.id && l.vi === vi); if (k >= 0) cart[k] = { ...cart[k], qty: cart[k].qty + this.state.qty }; else cart.push({ id: p.id, vi, qty: this.state.qty }); this.setState({ cart }); go('checkout'); },
+      hasStory: story.length > 0, story, storyTitle: p.cat === 'Combo offers' ? 'What is inside' : 'Made to be loved', storyImgs: storyImgs.map((im, i) => ({ ...im, cls: im.cls + (i ? ' b' : '') })),
+      hasBenefits: benefits.length > 0, benefits, hasTabs: tabDefs.length > 0, tabKey,
+      tabs: tabDefs.map((t) => ({ label: t[1], on: t[0] === tabKey, go: () => this.setState({ tab2: t[0] }) })), panel: flat(panelSecs).map(flag),
+      faq: faqs.map((f, i) => ({ q: f[0], a: f[1], open: s.open === i, cls: s.open === i ? 'on' : '', go: () => this.setState({ open: s.open === i ? -1 : i }) }))
+    });
+    pd.frames = pd.frames.map((f, i) => ({ ...f, fcls: i === idx ? 'on' : (i < idx ? 'prev' : 'next'), dcls: i === idx ? 'on' : '' }));
+    pd.variants = pd.variants.map((x) => ({ ...x, cls: (x.on ? 'on' : '') + (x.out ? ' out' : '') }));
     if (pd.related.length < 4) pd.related = P.filter((x) => x.id !== p.id).slice(0, 4).map(card);
   }
 
@@ -972,8 +1098,23 @@ renderVals() {
   };
 
   /* home: slider, carousel, countdown, finder */
-  const SL = [['Where Beauty Meets Bold Confidence', I.mLipstick, I.lipstick, 'lips'], ['Premium Shades For Everyday Glam', I.mMini, I.mini, 'lipstick'], ['Color That Elevates Your Style', I.mKajal, I.kajal, 'eyes'], ['Shades Designed To Empower You', I.mMascara, I.mascara, 'mascara'], ['Enhance Your Look With Elegance', I.mDew, I.dew, 'skin']];
-  const slides = SL.map((x, i) => ({ title: x[0], main: x[1], sub: x[2], cls: 'hslide' + (i === s.slide ? ' on' : ''), active: i === s.slide, inactive: i !== s.slide, go: colGo(x[3]), dotCls: 'sdot' + (i === s.slide ? ' on' : ''), pick: () => this.setState({ slide: i }), label: 'Show slide ' + (i + 1) }));
+  const SL = [['Where Beauty Meets Bold Confidence', M('lips_a'), I.lipstick, 'lips', 'Lips'], ['Premium Shades For Everyday Glam', M('lips_b'), I.mini, 'lipstick', 'Lipstick'], ['Color That Elevates Your Style', M('eyes_a'), I.kajal, 'eyes', 'Eyes'], ['Shades Designed To Empower You', M('mascara_a'), I.mascara, 'mascara', 'Mascara'], ['Enhance Your Look With Elegance', M('skin_a'), I.dew, 'skin', 'Skin']];
+  /* colour lab: the real lipstick variants, with their real photos, prices and stock */
+  const labP = byId('lipstick'), labV = labP.variants[s.labVi] || labP.variants[0], labI = labP.variants.indexOf(labV);
+  const lab = {
+    name: labV.n, color: labV.c, priceText: money(vPrice(labP, labV)), mrpText: money(vMrp(labP, labV) || 0), hasMrp: !!vMrp(labP, labV), out: !labV.avail,
+    addLabel: labV.avail ? 'Add to bag' : 'Sold out', count: labP.variants.length + ' shades',
+    swatches: labP.variants.map((v, i) => ({ n: v.n, c: v.c, on: i === labI, out: !v.avail, label: v.n + (v.avail ? '' : ', sold out'), go: () => this.setState({ labVi: i }), img: v.img || labP.img, imgCls: 'lab__img' + (i === labI ? ' on' : '') })),
+    add: () => (labV.avail ? addToCart('lipstick', labI, 1) : note('That shade is sold out.')),
+    view: () => go('product', { id: 'lipstick', vi: labI })
+  };
+  const worlds = [['Lips', 'lips', M('lips_c')], ['Eyes', 'eyes', M('eyes_b')], ['Face', 'face', M('face_a')], ['Skin', 'skin', M('skin_b')], ['Combo offers', 'combo', M('combo_a')]].map((x, i) => { const n = P.filter((p) => p.cats.includes(x[1])).length; return { num: '0' + (i + 1), key: x[1], name: x[0], sub: (COLS[x[1]] || COLS.all).d, img: x[2], go: colGo(x[1]), count: n + (n === 1 ? ' product' : ' products') }; });
+  const eyeHero = M('eyes_c');
+  const camp = [['Glow', 'Face', 'face', M('face_d')], ['Bold', 'Lips', 'lips', M('lips_a')], ['Define', 'Eyes', 'eyes', M('eyes_b')], ['Shimmer', 'Skin', 'skin', M('shim_a')], ['Together', 'Combo offers', 'combo', M('combo_b')]].map((x) => ({ word: x[0], name: x[1], img: x[3], go: colGo(x[2]), label: 'Shop ' + x[1].toLowerCase() }));
+  const THEME = { lips: 'lips', lipstick: 'lips', lipgloss: 'lips', mini: 'lips', mousse: 'lips', eyes: 'eyes', kajal: 'eyes', mascara: 'eyes', face: 'face', serum: 'face', setting: 'face', blush: 'face', compact: 'face', skin: 'skin', serum: 'skin', combo: 'combo' };
+  const listTheme = page === 'list' ? (THEME[(s.arg || {}).col] || 'all') : 'all';
+  const universe = ['strobe', 'lipstick', 'kajal', 'mascara', 'dew'].map((id) => byId(id)).filter(Boolean).map((p, i) => ({ ...card(p), pos: 'uni__p--' + (i + 1) }));
+  const slides = SL.map((x, i) => ({ title: x[0], main: x[1], sub: x[2], name: x[4], kicker: "India's fastest growing cosmetic brand", cls: 'cx-slide' + (i === s.slide ? ' on' : ''), active: i === s.slide, inactive: i !== s.slide, go: colGo(x[3]), dotCls: 'sdot' + (i === s.slide ? ' on' : ''), pick: () => this.setState({ slide: i }), label: 'Show slide ' + (i + 1) }));
   const trend = P.filter((p) => p.cats.includes('trending')).map(card);
   const mkCar = (key, n) => {
     const cs = (this._cs || {})[key] || { step: 300, max: Math.max(0, n - 3) }, idx = Math.min((s.cars || {})[key] || 0, cs.max);
@@ -1006,7 +1147,26 @@ renderVals() {
   const promoHidden = !!(s.page === 'checkout' || s.page === 'confirm' || s.page === 'login');
   const reels = REELS.map((r, i) => ({ v: r.v, p: r.p, open: () => this.setState({ video: i, hold: true }), label: 'Play reel ' + (i + 1) }));
 
+  /* search overlay */
+  const ovq = (s.q || '').toLowerCase().trim();
+  const ovRes = ovq ? P.filter((p) => (p.name + ' ' + p.sub + ' ' + p.cat + ' ' + p.variants.map((v) => v.n).join(' ')).toLowerCase().includes(ovq)).slice(0, 6).map((p) => ({ name: p.name, cat: p.cat, img: p.img, priceText: money(lo(p)), go: () => go('product', { id: p.id, vi: 0 }) })) : [];
+  const ovChips = [['Lipstick', 'lipstick'], ['Kajal', 'kajal'], ['Serum', 'serum'], ['Blush', 'blush'], ['Combos', 'combo'], ['Mascara', 'mascara']].map((c) => ({ label: c[0], go: colGo(c[1]) }));
+
+  /* quick view */
+  let qv = { open: false, close: () => {}, theme: 'face', tint: '#d9b9a0', img: '', name: '', cat: '', sub: '', priceText: '', hasMrp: false, mrpText: '', offText: '', hasVariants: false, swatches: false, chips: false, variantLabel: '', variantName: '', variants: [], out: false, addLabel: '', add: () => {}, view: () => {} };
+  if (s.qv && byId(s.qv.id)) {
+    const p = byId(s.qv.id), vi = Math.min(s.qv.vi || 0, p.variants.length - 1), v = p.variants[vi], vp = vPrice(p, v), vm = vMrp(p, v), o = vm ? Math.round((1 - vp / vm) * 100) : 0;
+    qv = { open: true, close: () => this.setState({ qv: null }), theme: THEMES[p.id] || 'face', tint: v.c || '#d9b9a0', img: v.img || p.img, name: p.name, cat: p.cat, sub: p.sub, priceText: money(vp), hasMrp: !!vm, mrpText: money(vm || 0), offText: o + '% off',
+      hasVariants: p.variants.length > 1, swatches: p.variants.length > 1 && p.variants.every((x) => x.c), chips: p.variants.length > 1 && !p.variants.every((x) => x.c), variantLabel: p.vlabel, variantName: v.n,
+      variants: p.variants.map((x, i) => ({ n: x.n, c: x.c || '#cccccc', on: i === vi, out: !x.avail, cls: i === vi ? 'on' : '', label: x.n + (x.avail ? '' : ', sold out'), priceText: money(vPrice(p, x)), go: () => this.setState({ qv: { id: p.id, vi: i } }) })),
+      out: !v.avail, addLabel: v.avail ? 'Add to bag' : 'Sold out', add: () => { addToCart(p.id, vi, 1); this.setState({ qv: null }); }, view: () => go('product', { id: p.id, vi }) };
+  }
+
   return {
+    qv, ovRes, ovChips, ovIdle: !ovq, ovHas: ovRes.length > 0, ovNone: !!ovq && ovRes.length === 0, searchCls: s.searchOpen ? 'is-open' : '', searchHidden: !s.searchOpen,
+    openSearch: () => { this.setState({ searchOpen: true, menu: false }); setTimeout(() => { try { document.getElementById('sovq').focus(); } catch (e) { /* ignore */ } }, 120); }, closeSearch: () => this.setState({ searchOpen: false }),
+    submitSearchOv: (e) => { if (e && e.preventDefault) e.preventDefault(); go('search'); },
+    cartRec: P.filter((x) => !s.cart.some((l) => l.id === x.id) && x.cats.includes('trending')).slice(0, 4).map(card), cartWord: cartN === 1 ? 'item' : 'items',
     show, nav, mnav, list, priceChips, pd, doc, art, lines, sum, codeMsg, coFields, loginFields, signFields, contactFields, profFields, payOpts, lastOrder, cartN, wishN: Object.keys(s.wish).length,
     q: s.q, sort: s.sort, stockOnly: s.stockOnly, qty: s.qty, code: s.code, nl: s.nl, nlErr: s.nlErr, toast: s.toast, menuOpen: s.menu, contactSent: s.csent, contactOpen: !s.csent,
     cartEmpty: s.cart.length === 0, hasCart: s.cart.length > 0, bagCountText: cartN ? '(' + cartN + ')' : '', payLabel: 'Place order · ' + money(total),
@@ -1023,7 +1183,7 @@ renderVals() {
     forgot: () => note('A password reset link would be emailed to you (demo).'),
     tiles: [['Eyes', I.kajal, 'eyes', '8 products'], ['Face', I.strobe, 'face', '7 products'], ['Lips', I.lipstick, 'lips', '13 products'], ['Skin', I.dew, 'skin', '3 products']].map((t) => ({ label: t[0], sub: t[3], img: t[1], go: colGo(t[2]) })),
     comboCards: P.filter((p) => p.cats.includes('combo')).map(card),
-    slides, hold: (e) => this.setState({ hold: true }), release: () => this.setState({ hold: false }), slidePrev: () => this.setState({ slide: (s.slide + 4) % 5 }), slideNext: () => this.setState({ slide: (s.slide + 1) % 5 }),
+    slides, slideNum: '0' + (s.slide + 1), hold: (e) => this.setState({ hold: true }), release: () => this.setState({ hold: false }), slidePrev: () => this.setState({ slide: (s.slide + 4) % 5 }), slideNext: () => this.setState({ slide: (s.slide + 1) % 5 }),
     trend, car, carL: mkCar('lips', 9), carE: mkCar('eyes', 5), carC: mkCar('combo', 5), count, tones, finder, lookShades, eyeCards, qres, hasQres: qres.length > 0 && page !== 'search', reels,
     videoOpen: s.video >= 0, videoSrc: s.video >= 0 ? REELS[s.video].v : '', videoPoster: s.video >= 0 ? REELS[s.video].p : '', closeVideo: () => this.setState({ video: -1, hold: false }),
     chip: s.chip, chipText: s.codeOk ? 'SAVE10 applied' : 'Tap to apply SAVE10', chipDown: (e) => { const p = e.touches ? e.touches[0] : e; this._drag = { dx: p.clientX - s.chip.x, dy: p.clientY - s.chip.y, moved: false }; },
@@ -1032,24 +1192,24 @@ renderVals() {
     footQuick: [['Lips', colGo('lips')], ['Eyes', colGo('eyes')], ['VELVATE MOUSSE LIPSTICK', colGo('mousse')], ['Face', colGo('face')], ['Skin', colGo('skin')], ['Combo Offers', colGo('combo')]].map((l, i) => ({ label: l[0], go: l[1], ico: ['M3 12c3-4 6-5 9-3 3-2 6-1 9 3-3 5-6 7-9 7s-6-2-9-7zM3 12h18', 'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z', 'M9 3h6v6H9zM8 9h8v12H8zM8 14h8', 'M12 21a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM9 10v.01M15 10v.01M9 15c1 1 5 1 6 0', 'M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z', 'M4 10h16v10H4zM3 7h18v3H3zM12 7v13M12 7c-2 0-4-1-4-3 2 0 4 1 4 3zM12 7c2 0 4-1 4-3-2 0-4 1-4 3z'][i] })),
     footInfo: [['About Us', () => go('about')], ['Privacy Policy', () => go('privacy')], ['Shipping Policy', () => go('shipping')], ['Terms Conditions', () => go('terms')], ['Return & Refund', () => go('returns')], ['Contact Us', () => go('contact')], ['Sitemap', () => go('sitemap')]].map((l, i) => ({ label: l[0], go: l[1], ico: ['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 11v6M12 7.5v.01', 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6zM9 12l2 2 4-4', 'M3 7h11v9H3zM14 10h4l3 3v3h-7M7 16.5a1.5 1.5 0 1 0 .01 0M17 16.5a1.5 1.5 0 1 0 .01 0', 'M7 3h8l4 4v14H7zM15 3v4h4M10 12h6M10 16h6', 'M4 12a8 8 0 1 1 3 6.2M4 12V6M4 12h6', 'M3 5h18v14H3zM3 7l9 6 9-6', 'M12 3v6M12 9H5v6M12 9h7v6M5 15v6M19 15v6'][i] })), /* ico: QI */
     sortOpen: s.sortOpen, sortLabel: ([['featured', 'Featured'], ['relevant', 'Most relevant'], ['best', 'Best selling'], ['az', 'Alphabetically, A-Z'], ['za', 'Alphabetically, Z-A'], ['low', 'Price, low to high'], ['high', 'Price, high to low'], ['old', 'Date, old to new'], ['new', 'Date, new to old']].find((o) => o[0] === s.sort) || [0, 'Featured'])[1], toggleSort: () => this.setState({ sortOpen: !s.sortOpen }),
-    sortOpts: [['featured', 'Featured'], ['relevant', 'Most relevant'], ['best', 'Best selling'], ['az', 'Alphabetically, A-Z'], ['za', 'Alphabetically, Z-A'], ['low', 'Price, low to high'], ['high', 'Price, high to low'], ['old', 'Date, old to new'], ['new', 'Date, new to old']].map((o) => ({ label: o[1], on: s.sort === o[0], cls: 'dsel__o' + (s.sort === o[0] ? ' on' : ''), go: () => this.setState({ sort: o[0], sortOpen: false, pg: 0 }) })),
+    sortOpts: [['featured', 'Featured'], ['relevant', 'Most relevant'], ['best', 'Best selling'], ['az', 'Alphabetically, A-Z'], ['za', 'Alphabetically, Z-A'], ['low', 'Price, low to high'], ['high', 'Price, high to low'], ['old', 'Date, old to new'], ['new', 'Date, new to old']].map((o) => ({ label: o[1], on: s.sort === o[0], cls: 'dsel__o' + (s.sort === o[0] ? ' on' : ''), go: () => this.setState({ sort: o[0], sortOpen: false, pg: 0, loadN: 1 }) })),
     topCls: s.topShow ? 'show' : '', toTop: () => { try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { /* ignore */ } },
     showChrome: page !== 'login',
     zoomOpen: s.zoomOpen, zoomed: s.zoomed, zcls: s.zoomed ? 'zoomed' : '', closeZoom: () => this.setState({ zoomOpen: false, zoomed: false }), toggleZoomed: () => this.setState({ zoomed: !s.zoomed }),
     zmove: (e) => { try { const r = e.currentTarget.getBoundingClientRect(), im = e.currentTarget.firstElementChild; if (im) im.style.transformOrigin = ((e.clientX - r.left) / r.width * 100) + '% ' + ((e.clientY - r.top) / r.height * 100) + '%'; } catch (er) { /* ignore */ } },
     zleave: (e) => { try { const im = e.currentTarget.firstElementChild; if (im) im.style.transformOrigin = '50% 50%'; } catch (er) { /* ignore */ } },
     menuCls: s.menu ? 'is-open' : '', filterCls: s.filterOpen ? 'is-open' : '', closeMenu: () => this.setState({ menu: false }),
-    filterCount: (s.stockOnly ? 1 : 0) + (s.price !== 'any' ? 1 : 0), hasFilterCount: (s.stockOnly ? 1 : 0) + (s.price !== 'any' ? 1 : 0) > 0,
-    openFilter: () => this.setState({ filterOpen: true }), closeFilter: () => this.setState({ filterOpen: false }), clearFilters: () => this.setState({ stockOnly: false, price: 'any', pg: 0 }),
+    filterCount: (s.stockOnly ? 1 : 0) + (s.price !== 'any' ? 1 : 0) + (s.shadeF ? 1 : 0), hasFilterCount: (s.stockOnly ? 1 : 0) + (s.price !== 'any' ? 1 : 0) + (s.shadeF ? 1 : 0) > 0,
+    openFilter: () => this.setState({ filterOpen: true }), closeFilter: () => this.setState({ filterOpen: false }), clearFilters: () => this.setState({ stockOnly: false, price: 'any', pg: 0, shadeF: '', loadN: 1 }),
     filterCats: [['all', 'All products'], ['lips', 'Lips'], ['eyes', 'Eyes'], ['face', 'Face'], ['skin', 'Skin'], ['combo', 'Combo offers'], ['trending', 'Trending']].map((c) => ({ label: c[1], on: page === 'list' && (arg.col || 'all') === c[0], go: colGo(c[0]) })),
     filterShow: 'Show ' + list.countText,
-    goHome: () => go('home'), goContactPage: () => go('contact'), aboutImgs: { a: I.mStrobe, b: I.mLipstick, c: I.mPearl }, goAll: colGo('all'), goCombo: colGo('combo'), goTrending: colGo('trending'), goLips: colGo('lips'), goEyes: colGo('eyes'), goLipstick: colGo('lipstick'), goBlog: () => go('blog'), goWish: () => go('wish'), goCart: () => go('cart'), goCheckout: () => go('checkout'), goFinder: () => go('finder'), goAbout: () => go('about'),
+    goHome: () => go('home'), goContactPage: () => go('contact'), aboutImgs: { a: M('face_c'), b: M('lips_a'), c: M('skin_a') }, lab, worlds, eyeHero, camp, listTheme, universe, goAll: colGo('all'), goCombo: colGo('combo'), goTrending: colGo('trending'), goLips: colGo('lips'), goEyes: colGo('eyes'), goLipstick: colGo('lipstick'), goBlog: () => go('blog'), goWish: () => go('wish'), goCart: () => go('cart'), goCheckout: () => go('checkout'), goFinder: () => go('finder'), goAbout: () => go('about'),
     goAccount: () => go(s.user ? 'account' : 'login'), goAllClose: () => go('list', { col: 'all' }), goLogin: () => go('login'),
     openGlam: () => go('product', { id: 'glam', vi: 0 }),
     toggleMenu: () => this.setState({ menu: !s.menu }), openDrawer: () => this.setState({ drawer: true }), closeDrawer: () => this.setState({ drawer: false }),
     onSearch: (e) => { const v = e.target.value; this.setState({ q: v, page: this.state.page === 'search' && !v.trim() ? 'search' : this.state.page }); },
     submitSearch: (e) => { if (e && e.preventDefault) e.preventDefault(); go('search'); },
-    onSort: (e) => this.setState({ sort: e.target.value }), toggleStock: () => this.setState({ stockOnly: !s.stockOnly, pg: 0 }),
+    onSort: (e) => this.setState({ sort: e.target.value }), toggleStock: () => this.setState({ stockOnly: !s.stockOnly, pg: 0, loadN: 1 }),
     gridCols: s.cols, dens4: s.cols === 4, dens5: s.cols === 5, setCols4: () => this.setState({ cols: 4, pg: 0 }), setCols5: () => this.setState({ cols: 5, pg: 0 }),
     qtyDec: () => this.setState({ qty: Math.max(1, s.qty - 1) }), qtyInc: () => this.setState({ qty: Math.min(9, s.qty + 1) }),
     onCode: (e) => this.setState({ code: e.target.value, codeErr: false }),
