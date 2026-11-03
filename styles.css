@@ -2460,3 +2460,13 @@ a, button, [role="button"], summary, label { -webkit-tap-highlight-color: transp
   .pc__name { min-height: 2.3em; }
   .pc__sub { display: none; }
 }
+@media (max-width: 640px) {
+  .rail-m:has(> :nth-child(3)), .cx-blog__grid:has(> :nth-child(3)) {
+    display: flex !important; grid-template-columns: none !important; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory;
+    gap: 14px; margin-inline: -20px; padding: 6px 20px 18px; scrollbar-width: none; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain;
+  }
+  .rail-m:has(> :nth-child(3))::-webkit-scrollbar, .cx-blog__grid:has(> :nth-child(3))::-webkit-scrollbar { display: none; }
+  .rail-m:has(> :nth-child(3)) > *, .cx-blog__grid:has(> :nth-child(3)) > * { flex: 0 0 min(62vw, 250px); scroll-snap-align: start; min-width: 0; }
+  .cx-blog__grid:has(> :nth-child(3)) > * { flex-basis: min(72vw, 290px); }
+  .rail-m:has(> :nth-child(3)) > .sc-host { display: flex; flex-direction: column; }
+}
