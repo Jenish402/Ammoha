@@ -2480,3 +2480,18 @@ a, button, [role="button"], summary, label { -webkit-tap-highlight-color: transp
   .ldrawer[aria-label="Menu"] .mmenu button.macct, .ldrawer[aria-label="Menu"] .mmenu button:last-child { min-height: 58px; align-items: center; }
   .ldrawer[aria-label="Menu"] .ldrawer__search { margin-bottom: 14px; }
 }
+.hd-search-m { display: none; }
+@media (max-width: 900px) {
+  .hd-search-m { display: inline-grid; }
+  .am-header__left .hd-search { display: none; }
+}
+@media (max-width: 900px) {
+  .am-header__row { grid-template-columns: auto minmax(0, 1fr) auto; gap: 4px; }
+  .am-header__row .am-wordmark { justify-self: center; }
+  .am-header__right { gap: 2px; }
+}
+@media (max-width: 900px) {
+  .mf, .cx-mf { height: auto; min-height: 0; }
+  .mf__stick { position: static; min-height: 0; padding-block: 84px 72px; display: block; }
+  .mf__in { gap: 26px; }
+}
