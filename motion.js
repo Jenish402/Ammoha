@@ -279,6 +279,31 @@
   }
   var hlTimer; new MutationObserver(function () { clearTimeout(hlTimer); hlTimer = setTimeout(headlines, 180); }).observe(d.documentElement, { childList: true, subtree: true });
 
+
+  /* auto-running rows: drift on their own, pause while touched, ping-pong at the ends */
+  var autoState = new WeakMap(), autoLast = 0;
+  function autoTick(t) {
+    var dt = Math.min(48, t - autoLast || 16); autoLast = t;
+    if (!reduce) d.querySelectorAll('[data-auto]').forEach(function (el) {
+      var st = autoState.get(el); if (!st) { st = { dir: 1, pause: 0, x: el.scrollLeft, bound: false }; autoState.set(el, st); }
+      if (!st.bound) {
+        st.bound = true;
+        var hold = function () { st.pause = Date.now() + 2600; };
+        ['pointerdown', 'touchstart', 'wheel', 'keydown'].forEach(function (ev) { el.addEventListener(ev, hold, { passive: true }); });
+        el.addEventListener('mouseenter', function () { st.hover = true; }); el.addEventListener('mouseleave', function () { st.hover = false; st.pause = Date.now() + 800; });
+      }
+      var r = el.getBoundingClientRect(); if (r.bottom < 0 || r.top > w.innerHeight) { st.x = el.scrollLeft; return; }
+      if (st.hover || Date.now() < st.pause) { st.x = el.scrollLeft; return; }
+      var max = el.scrollWidth - el.clientWidth; if (max <= 4) return;
+      if (Math.abs(st.x - el.scrollLeft) > 2) st.x = el.scrollLeft;
+      st.x += st.dir * dt * 0.045;
+      if (st.x >= max) { st.x = max; st.dir = -1; } else if (st.x <= 0) { st.x = 0; st.dir = 1; }
+      el.scrollLeft = st.x;
+    });
+    w.requestAnimationFrame(autoTick);
+  }
+  w.requestAnimationFrame(autoTick);
+
   var rt = null, wasMobile = mobile;
   w.addEventListener('resize', function () {
     clearTimeout(rt);
