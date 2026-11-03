@@ -2470,3 +2470,13 @@ a, button, [role="button"], summary, label { -webkit-tap-highlight-color: transp
   .cx-blog__grid:has(> :nth-child(3)) > * { flex-basis: min(72vw, 290px); }
   .rail-m:has(> :nth-child(3)) > .sc-host { display: flex; flex-direction: column; }
 }
+@media (max-width: 900px) {
+  .ldrawer[aria-label="Menu"] .mmenu { gap: 4px; padding-top: 14px; }
+  .ldrawer[aria-label="Menu"] .mmenu button:not(.sub):not(.macct):not(.mdiv):not(:last-child) { min-height: 72px; padding-block: 18px; align-items: center; line-height: 1.15; }
+  .ldrawer[aria-label="Menu"] .mmenu button.sub { min-height: 50px; padding-block: 12px; align-items: center; }
+  .ldrawer[aria-label="Menu"] .mmenu button.sub:first-of-type, .ldrawer[aria-label="Menu"] .mmenu button:not(.sub) + button.sub { margin-top: 6px; }
+  .ldrawer[aria-label="Menu"] .mmenu button.sub + button:not(.sub) { margin-top: 10px; }
+  .ldrawer[aria-label="Menu"] .mmenu button.mdiv { margin: 28px 0 12px; }
+  .ldrawer[aria-label="Menu"] .mmenu button.macct, .ldrawer[aria-label="Menu"] .mmenu button:last-child { min-height: 58px; align-items: center; }
+  .ldrawer[aria-label="Menu"] .ldrawer__search { margin-bottom: 14px; }
+}
