@@ -304,6 +304,23 @@
   }
   w.requestAnimationFrame(autoTick);
 
+
+  /* back-to-top: Lenis owns scrolling on desktop and cancels native smooth scrolls, so route the button through it */
+  d.addEventListener('click', function (e) {
+    var b = e.target && e.target.closest ? e.target.closest('.totop') : null; if (!b) return;
+    e.stopPropagation(); e.preventDefault();
+    var y = w.pageYOffset || de.scrollTop || 0;
+    if (lenis) { lenis.scrollTo(0, { duration: Math.min(1.8, .5 + y / 4000), easing: function (t) { return 1 - Math.pow(1 - t, 3); } }); return; }
+    if (reduce) { w.scrollTo(0, 0); return; }
+    var y0 = y, t0 = null, dur = Math.min(1400, 450 + y0 / 5);
+    (function step(ts) {
+      if (t0 === null) t0 = ts;
+      var k = Math.min(1, (ts - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+      w.scrollTo(0, Math.round(y0 * (1 - e)));
+      if (k < 1) w.requestAnimationFrame(step);
+    })(w.performance ? w.performance.now() : 0);
+  }, true);
+
   var rt = null, wasMobile = mobile;
   w.addEventListener('resize', function () {
     clearTimeout(rt);
