@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Product card</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>body{margin:0;font-family:var(--font-sans)}</style>
+</helmet>
+<article class="am-stage am-pcard" style="min-height:100%">
+<div class="am-pcard__media">
+<sc-if value="{{ it.hasBadge }}" hint-placeholder-val="{{ false }}"><span class="am-badge am-badge--sale">{{ it.badge }}</span></sc-if>
+<button class="am-wish" aria-pressed="{{ it.wish }}" aria-label="{{ it.wishLabel }}" onClick="{{ it.toggle }}"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></button>
+<button style="border:0;background:none;padding:0;width:100%;cursor:pointer" aria-label="{{ it.viewLabel }}" onClick="{{ it.open }}">
+<sc-if value="{{ it.hasImg }}" hint-placeholder-val="{{ true }}"><img src="{{ it.img }}" alt="{{ it.name }}" loading="lazy" decoding="async"></sc-if>
+<sc-if value="{{ it.noImg }}" hint-placeholder-val="{{ false }}"><span class="ph" style="background: radial-gradient(circle at 35% 30%, #ffffff, {{ it.tint }} 75%)">{{ it.phText }}</span></sc-if>
+</button>
+</div>
+<div class="am-pcard__body">
+<p class="am-pcard__cat">{{ it.cat }}</p>
+<button class="am-pcard__name" style="border:0;background:none;padding:0;text-align:left;cursor:pointer" onClick="{{ it.open }}">{{ it.name }}</button>
+<p class="am-pcard__sub">{{ it.sub }}</p>
+<div class="am-dots">
+<sc-for list="{{ it.dots }}" as="d" hint-placeholder-count="3"><i style="background: {{ d.c }}" title="{{ d.n }}"></i></sc-for>
+<sc-if value="{{ it.hasMore }}" hint-placeholder-val="{{ false }}"><span>{{ it.moreText }}</span></sc-if>
+</div>
+<div class="am-price"><span>{{ it.priceText }}</span><sc-if value="{{ it.hasMrp }}" hint-placeholder-val="{{ true }}"><s>{{ it.mrpText }}</s><em>{{ it.offText }}</em></sc-if></div>
+</div>
+<div class="am-pcard__foot"><button class="am-btn am-btn--outline am-btn--sm am-btn--block" onClick="{{ it.add }}">{{ it.addLabel }}</button></div>
+</article>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"item":{"editor":null,"default":null},"$preview":{"width":300,"height":520}}'>
+class Component extends DCLogic {
+renderVals() {
+const noop = () => {};
+const it = this.props.item || { hasBadge: false, badge: '', wish: false, wishLabel: 'Save to wishlist', toggle: noop, viewLabel: 'View product', open: noop, hasImg: false, noImg: true, img: '', name: 'Siren Silk Matte Liquid Lipstick', phText: 'Photo coming soon', tint: '#f4b6c8', cat: 'Lips', sub: 'Smudge-proof, 12 shades', dots: [{ n: 'Velvet Orchid', c: '#a64d79' }, { n: 'Cocoa Craze', c: '#7a4033' }], hasMore: true, moreText: '+10', priceText: '₹699', hasMrp: true, mrpText: '₹999', offText: '30% off', add: noop, addLabel: 'Choose option' };
+return { it };
+}
+}
+</script>
+</body>
+</html>
