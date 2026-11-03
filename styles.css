@@ -2517,6 +2517,7 @@ a, button, [role="button"], summary, label { -webkit-tap-highlight-color: transp
 .ft__base span:first-child { color: rgba(247, 241, 231, .6); }
 .ft__igbtn { color: var(--ivory); border-color: rgba(227, 205, 150, .55); background: transparent; }
 .ft__igbtn:hover { background: var(--ivory); color: var(--burgundy); }
-@media (prefers-reduced-motion: reduce) { .cx-marq__t { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .cx-marq__t { animation-duration: 110s; } }
 .cx-hs .hs__track { scroll-snap-type: none !important; } .cx-hs .hs__p { scroll-snap-align: none; }
 .cx-hs .hs__w { top: -40px; } .cx-hs .hs__img { margin-top: 36px; }
+@media (prefers-reduced-motion: reduce) { .cx-marq__t { animation: cxMarq 110s linear infinite !important; } }

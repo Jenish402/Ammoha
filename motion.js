@@ -284,7 +284,7 @@
   var autoState = new WeakMap(), autoLast = 0;
   function autoTick(t) {
     var dt = Math.min(48, t - autoLast || 16); autoLast = t;
-    if (!reduce) d.querySelectorAll('[data-auto]').forEach(function (el) {
+    d.querySelectorAll('[data-auto]').forEach(function (el) {
       var st = autoState.get(el); if (!st) { st = { dir: 1, pause: 0, x: el.scrollLeft, bound: false }; autoState.set(el, st); }
       if (!st.bound) {
         st.bound = true;
@@ -296,7 +296,7 @@
       if (st.hover || Date.now() < st.pause) { st.x = el.scrollLeft; return; }
       var max = el.scrollWidth - el.clientWidth; if (max <= 4) return;
       if (Math.abs(st.x - el.scrollLeft) > 2) st.x = el.scrollLeft;
-      st.x += st.dir * dt * 0.045;
+      st.x += st.dir * dt * (reduce ? 0.02 : 0.045);
       if (st.x >= max) { st.x = max; st.dir = -1; } else if (st.x <= 0) { st.x = 0; st.dir = 1; }
       el.scrollLeft = st.x;
     });
