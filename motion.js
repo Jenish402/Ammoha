@@ -200,16 +200,20 @@
     /* soft in-place entrance: no full-screen cover, header and footer stay put */
     var pg = d.querySelector('.pg'); if (!pg) return;
     var main = [].filter.call(pg.children, function (c) { return !/(^|\s)(am-bar|am-header|am-scrim|ldrawer|am-drawer|ft|sov|qv|am-toast|totop|vbox)(\s|$)/.test(c.className || '') && c.tagName !== 'ASIDE'; });
+    if (Date.now() - (routeCheck.at || 0) < 900) return; routeCheck.at = Date.now();
     if (curtainTl) curtainTl.kill();
     curtainTl = gsap.fromTo(main, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: .45, ease: 'power2.out', clearProps: 'opacity,transform' });
   }
 
-  /* header hides on scroll down, returns on scroll up */
+  /* header hides on scroll down, returns on scroll up; sticky bars sit just under it */
+  function hdrOff() { var h = d.querySelector('.am-header'); if (!h) return; de.style.setProperty('--hdr-off', h.classList.contains('is-hidden') ? '0px' : Math.round(h.getBoundingClientRect().height) + 'px'); }
+  setInterval(hdrOff, 600); w.addEventListener('resize', hdrOff);
   var lastY = 0, hdr = null;
   w.addEventListener('scroll', function () {
     hdr = hdr || d.querySelector('.am-header'); if (!hdr) return;
     var y = w.pageYOffset || de.scrollTop || 0;
     if (y > lastY + 6 && y > 320) hdr.classList.add('is-hidden'); else if (y < lastY - 6 || y < 120) hdr.classList.remove('is-hidden');
+    hdrOff();
     lastY = y;
   }, { passive: true });
 
